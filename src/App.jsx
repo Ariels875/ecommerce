@@ -1,5 +1,5 @@
 // src/App.js
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
 import Login from './components/Login';
 import AdminPanel from './components/AdminPanel';
@@ -11,12 +11,12 @@ function App() {
     <Router>
       <div className="App">
         <Header />
-        <Switch>
-          <Route exact path="/" component={ProductList} />
-          <Route path="/login" component={Login} />
-          <Route path="/admin" component={AdminPanel} />
-          <Route path="/product/:id" component={ProductDetail} />
-        </Switch>
+        <Routes>
+          <Route path="/" element={<ProductList />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/admin" element={<AdminPanel />} />
+          <Route path="/product/:id" element={<ProductDetail />} />
+        </Routes>
       </div>
     </Router>
   );
