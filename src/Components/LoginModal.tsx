@@ -18,11 +18,32 @@ interface LoginModalProps {
 const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Aquí iría la lógica de autenticación
-    console.log('Login attempt with:', { email, password });
+    setError(null); // Resetea el error al enviar
+
+    try {
+      const response = await fetch('http://localhost:8787/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+        credentials: 'include', // Importante para incluir cookies
+      });
+
+      if (!response.ok) {
+        throw new Error('Credenciales incorrectas');
+      }
+
+      // Las cookies serán gestionadas automáticamente por el navegador
+      console.log('Login exitoso');
+      onClose(); // Cierra el modal al iniciar sesión correctamente
+    } catch (error: unknown) {
+      setError((error as Error).message); // Muestra el error si la autenticación falla
+    }
   };
 
   return (
@@ -35,6 +56,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
+          {error && <p className="text-red-500">{error}</p>} {/* Muestra el mensaje de error */}
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Correo Electrónico

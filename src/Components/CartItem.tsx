@@ -1,3 +1,4 @@
+// CartItem.tsx
 import React from 'react';
 import { Plus, Minus, X } from 'lucide-react';
 import { Button } from '../Ui/Button';

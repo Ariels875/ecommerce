@@ -15,6 +15,7 @@ import {
 import { useTheme } from './ThemeContext';
 import ProductCard from './ProductCard';
 import CartItem from './CartItem';
+import LoginModal from './LoginModal';
 import { Product, CartItem as CartItemType, fetchProducts } from './types';
 
 const AppWithTheme: React.FC = () => {
@@ -22,6 +23,7 @@ const AppWithTheme: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [cart, setCart] = useState<CartItemType[]>([]);
   const { theme, toggleTheme } = useTheme();
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -34,25 +36,13 @@ const AppWithTheme: React.FC = () => {
 
   const addToCart = (product: Product, color: string, size: string) => {
     setCart((prevCart) => {
-      const existingItem = prevCart.find(
-        (item) =>
-          item.id === product.id &&
-          item.selectedColor === color &&
-          item.selectedSize === size
-      );
+      const existingItem = prevCart.find((item) => item.id === product.id && item.selectedColor === color && item.selectedSize === size);
       if (existingItem) {
         return prevCart.map((item) =>
-          item.id === product.id &&
-          item.selectedColor === color &&
-          item.selectedSize === size
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
+          item.id === product.id && item.selectedColor === color && item.selectedSize === size ? { ...item, quantity: item.quantity + 1 } : item
         );
       }
-      return [
-        ...prevCart,
-        { ...product, quantity: 1, selectedColor: color, selectedSize: size },
-      ];
+      return [...prevCart, { ...product, quantity: 1, selectedColor: color, selectedSize: size }];
     });
   };
 
@@ -86,20 +76,22 @@ const AppWithTheme: React.FC = () => {
                 <Input type="search" placeholder="Buscar productos..." className="w-64" />
               </div>
               <Button variant="ghost" size="icon" className="transition-colors duration-300 hover:bg-gray-200 dark:hover:bg-gray-700">
-                <Search className="h-5 w-5" />
+                <Search className="h-5 w-5 dark:text-white" />
                 <span className="sr-only">Buscar</span>
               </Button>
-              <Button variant="ghost" size="icon" className="transition-colors duration-300 hover:bg-gray-200 dark:hover:bg-gray-700">
-                <User className="h-5 w-5" />
+              <Button variant="ghost" size="icon" className="transition-colors duration-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+              onClick={() => setIsLoginModalOpen(true)}
+              >
+                <User className="h-5 w-5 dark:text-white" />
                 <span className="sr-only">Cuenta</span>
               </Button>
               <Sheet>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon" className="relative transition-colors duration-300 hover:bg-gray-200 dark:hover:bg-gray-700">
-                    <ShoppingCart className="h-5 w-5" />
+                    <ShoppingCart className="h-5 w-5 dark:text-white" />
                     <span className="sr-only">Carrito</span>
                     {totalItems > 0 && (
-                      <Badge variant="destructive" className="absolute -top-2 -right-2 px-2 py-1 text-xs">
+                      <Badge variant="destructive" className="absolute -top-2 -right-2 px-2 py-1 text-xs bg-red-600 text-white">
                         {totalItems}
                       </Badge>
                     )}
@@ -119,7 +111,7 @@ const AppWithTheme: React.FC = () => {
                   <div className="mt-8">
                     {cart.map((item) => (
                       <CartItem
-                        key={item.id}
+                        key={`${item.id}-${item.selectedColor}-${item.selectedSize}`}
                         item={item}
                         updateQuantity={updateQuantity}
                         removeFromCart={removeFromCart}
@@ -139,7 +131,7 @@ const AppWithTheme: React.FC = () => {
                   )}
                 </SheetContent>
               </Sheet>
-              <Button variant="ghost" size="icon" onClick={toggleTheme} className="transition-colors duration-300 hover:bg-gray-200 dark:hover:bg-gray-700">
+              <Button variant="ghost" size="icon" onClick={toggleTheme} className="transition-colors duration-300 hover:bg-gray-200 dark:hover:bg-gray-700 text-cyan-600">
                 {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
                 <span className="sr-only">Cambiar tema</span>
               </Button>
@@ -148,8 +140,8 @@ const AppWithTheme: React.FC = () => {
         </div>
       </nav>
 
-      {/* Main content */}
-      <main className="flex-grow container mx-auto px-4 py-8">
+{/* Main content */}
+<main className="flex-grow container mx-auto px-4 py-8">
         <h2 className="text-3xl font-semibold mb-6 dark:text-white">Productos Destacados</h2>
         {loading ? (
           <div className="flex justify-center items-center h-64">
@@ -192,6 +184,7 @@ const AppWithTheme: React.FC = () => {
           </div>
         </div>
       </footer>
+      <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
     </div>
   );
 };

@@ -33,14 +33,14 @@ const AdminPanel: React.FC = () => {
   const fetchProducts = async () => {
     // Replace with actual API call
     const response = await fetch('/api/products');
-    const data = await response.json();
+    const data: Product[] = await response.json();
     setProducts(data);
   };
 
   const fetchCategories = async () => {
     // Replace with actual API call
     const response = await fetch('/api/categories');
-    const data = await response.json();
+    const data: Product[] = await response.json();
     setCategories(data);
   };
 
