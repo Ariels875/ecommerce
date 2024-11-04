@@ -13,7 +13,7 @@ function App() {
           <Routes>
             <Route path="/" element={<AppWithTheme />} />
             <Route
-              path="/admin"
+              path="/admin/panel"
               element={
                 <AdminRoute>
                   <AdminPanel />

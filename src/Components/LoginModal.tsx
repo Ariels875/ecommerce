@@ -5,6 +5,7 @@ import { Button } from '../Ui/Button';
 import { Input } from '../Ui/Input';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, } from '../Ui/Dialog';
 import { Toast, ToastTitle, ToastDescription } from '../Ui/Toast';
+import { useAuth } from '../hooks/useAuth';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -28,13 +29,14 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const [error, setError] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
   const navigate = useNavigate();
+  const { login, checkAuthStatus } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
+      const response = await fetch(`${import.meta.env.VITE_API_DEV}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -51,25 +53,20 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         throw new Error(data.error || 'Error al iniciar sesión');
       }
 
-      // Guardar información del usuario
-      localStorage.setItem(
-        'user',
-        JSON.stringify({
-          id: data.user.id,
-          email: data.user.email,
-          rol: data.user.rol,
-          nombre: data.user.nombre,
-        })
-      );
+      await login(data.user);
+      await checkAuthStatus();
 
       onClose();
       setEmail('');
       setPassword('');
-
-      navigate(data.user.rol === 'administrador' ? '/admin/panel' : '/');
-
-      // Mostrar el toast de éxito
       setShowToast(true);
+
+      // Redirigir inmediatamente después de confirmar la autenticación
+      if (data.user.rol === 'administrador') {
+        navigate('/admin/panel');
+      } else {
+        navigate('/');
+      }
     } catch (error) {
       console.error('Error durante el login:', error);
       setError(error instanceof Error ? error.message : 'Error al iniciar sesión');

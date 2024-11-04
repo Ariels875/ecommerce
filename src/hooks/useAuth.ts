@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 interface User {
   id: number;
@@ -7,31 +7,87 @@ interface User {
   nombre: string;
 }
 
+interface AuthState {
+  isAuthenticated: boolean;
+  user: User | null;
+  loading: boolean;
+}
+
 export const useAuth = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
+  const [authState, setAuthState] = useState<AuthState>({
+    isAuthenticated: false,
+    user: null,
+    loading: true
+  });
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/session`, {
-          credentials: 'include'
-        });
+  const checkAuthStatus = useCallback(async () => {
+    setAuthState(prev => ({ ...prev, loading: true }));
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_DEV}/auth/verify`, {
+        credentials: 'include',
+      });
+  
+      if (response.ok) {
         const data = await response.json();
-        
-        if (data.authenticated) {
-          setIsAuthenticated(true);
-          setUser(data.user);
-        }
-      } catch (error) {
-        console.error('Error checking auth status:', error);
-        setIsAuthenticated(false);
-        setUser(null);
+        setAuthState({
+          isAuthenticated: true,
+          user: data.user,
+          loading: false
+        });
+      } else {
+        localStorage.removeItem('user');
+        setAuthState({
+          isAuthenticated: false,
+          user: null,
+          loading: false
+        });
       }
-    };
-
-    checkAuth();
+    } catch (error) {
+      console.error('Error verificando autenticación:', error);
+      localStorage.removeItem('user');
+      setAuthState({
+        isAuthenticated: false,
+        user: null,
+        loading: false
+      });
+    }
   }, []);
 
-  return { isAuthenticated, user };
+  useEffect(() => {
+    checkAuthStatus();
+  }, [checkAuthStatus]);
+
+  const login = useCallback(async (userData: User) => {
+    localStorage.setItem('user', JSON.stringify(userData));
+    setAuthState({
+      isAuthenticated: true,
+      user: userData,
+      loading: false
+    });
+    // Verificar el estado de autenticación después del login
+    await checkAuthStatus();
+  }, [checkAuthStatus]);
+
+  const logout = useCallback(async () => {
+    try {
+      await fetch(`${import.meta.env.VITE_API_DEV}/auth/logout`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+    } finally {
+      localStorage.removeItem('user');
+      setAuthState({
+        isAuthenticated: false,
+        user: null,
+        loading: false
+      });
+    }
+  }, []);
+
+  return {
+    ...authState,
+    login,
+    logout,
+    checkAuthStatus
+  };
 };

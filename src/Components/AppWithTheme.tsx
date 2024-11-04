@@ -75,11 +75,11 @@ const AppWithTheme: React.FC = () => {
               <div className="hidden sm:block">
                 <Input type="search" placeholder="Buscar productos..." className="w-64" />
               </div>
-              <Button variant="ghost" size="icon" className="transition-colors duration-300 hover:bg-gray-200 dark:hover:bg-gray-700">
+              <Button variant="ghost" size="icon" className="transition-colors duration-300 bg-white hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700">
                 <Search className="h-5 w-5 dark:text-white" />
                 <span className="sr-only">Buscar</span>
               </Button>
-              <Button variant="ghost" size="icon" className="transition-colors duration-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+              <Button variant="ghost" size="icon" className="transition-colors duration-300 bg-white hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700"
               onClick={() => setIsLoginModalOpen(true)}
               >
                 <User className="h-5 w-5 dark:text-white" />
@@ -87,7 +87,7 @@ const AppWithTheme: React.FC = () => {
               </Button>
               <Sheet>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon" className="relative transition-colors duration-300 hover:bg-gray-200 dark:hover:bg-gray-700">
+                  <Button variant="ghost" size="icon" className="relative transition-colors duration-300 bg-white hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700">
                     <ShoppingCart className="h-5 w-5 dark:text-white" />
                     <span className="sr-only">Carrito</span>
                     {totalItems > 0 && (
@@ -131,7 +131,7 @@ const AppWithTheme: React.FC = () => {
                   )}
                 </SheetContent>
               </Sheet>
-              <Button variant="ghost" size="icon" onClick={toggleTheme} className="transition-colors duration-300 hover:bg-gray-200 dark:hover:bg-gray-700 text-cyan-600">
+              <Button variant="ghost" size="icon" onClick={toggleTheme} className="transition-colors duration-300 bg-white hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-cyan-600">
                 {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
                 <span className="sr-only">Cambiar tema</span>
               </Button>
