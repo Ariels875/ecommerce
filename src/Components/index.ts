@@ -1,4 +1,3 @@
-// index.ts
 export { default as AppWithTheme } from './AppWithTheme';
 export { default as ProductCard } from './ProductCard';
 export { default as CartItem } from './CartItem';

@@ -1,4 +1,3 @@
-// AppWithTheme.tsx
 import React, { useState, useEffect } from 'react';
 import { ShoppingCart, User, Search, Sun, Moon } from 'lucide-react';
 import { Button } from '../Ui/Button';

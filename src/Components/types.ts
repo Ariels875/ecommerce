@@ -20,7 +20,7 @@ export interface CartItem extends Product {
 
 export const fetchProducts = async (): Promise<Product[]> => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_DEV}/products`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/products`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
