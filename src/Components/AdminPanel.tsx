@@ -1,37 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Home, 
-  Sun, 
-  Moon, 
-  LogOut, 
-  Plus, 
-  Pencil, 
-  Trash2, 
-  Package, 
-  Grid
-} from 'lucide-react';
+import { Home, Sun, Moon, LogOut, Plus, Pencil, Trash2, Package, Grid } from 'lucide-react';
 import { useTheme } from './ThemeContext';
 import { Button } from '../Ui/Button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '../Ui/Dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../Ui/Dialog';
 import { Input } from '../Ui/Input';
 import { Label } from '../Ui/Label';
 import { Textarea } from '../Ui/Textarea';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../Ui/Tabs';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '../Ui/Table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../Ui/Table';
 
 interface Category {
   id: number;
@@ -85,7 +62,7 @@ const AdminPanel = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch('http://localhost:8787/products', {
+      const response = await fetch(`${import.meta.env.VITE_API_DEV}/products`, {
         credentials: 'include'
       });
       if (response.ok) {
@@ -99,7 +76,7 @@ const AdminPanel = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('http://localhost:8787/categories', {
+      const response = await fetch(`${import.meta.env.VITE_API_DEV}/categories`, {
         credentials: 'include'
       });
       if (response.ok) {
@@ -115,7 +92,7 @@ const AdminPanel = () => {
 
   const handleLogout = async () => {
     try {
-      await fetch('http://localhost:8787/auth/logout', {
+      await fetch(`${import.meta.env.VITE_API_DEV}/auth/logout`, {
         method: 'POST',
         credentials: 'include'
       });
@@ -129,8 +106,8 @@ const AdminPanel = () => {
     e.preventDefault();
     const method = editingProduct ? 'PUT' : 'POST';
     const url = editingProduct 
-      ? `http://localhost:8787/products/${editingProduct.id}`
-      : 'http://localhost:8787/products/';
+      ? `${import.meta.env.VITE_API_DEV}/products/${editingProduct.id}`
+      : `${import.meta.env.VITE_API_DEV}/products/`;
 
     try {
       const response = await fetch(url, {
@@ -171,8 +148,8 @@ const AdminPanel = () => {
     e.preventDefault();
     const method = editingCategory ? 'PUT' : 'POST';
     const url = editingCategory
-      ? `http://localhost:8787/categories/${editingCategory.id}`
-      : 'http://localhost:8787/categories';
+      ? `${import.meta.env.VITE_API_DEV}/categories/${editingCategory.id}`
+      : `${import.meta.env.VITE_API_DEV}/categories`;
 
     try {
       const response = await fetch(url, {
@@ -199,7 +176,7 @@ const AdminPanel = () => {
     if (!confirm('¿Estás seguro de que deseas eliminar este producto?')) return;
 
     try {
-      const response = await fetch(`http://localhost:8787/products/${id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_DEV}/products/${id}`, {
         method: 'DELETE',
         credentials: 'include'
       });
@@ -216,7 +193,7 @@ const AdminPanel = () => {
     if (!confirm('¿Estás seguro de que deseas eliminar esta categoría?')) return;
 
     try {
-      const response = await fetch(`http://localhost:8787/categories/${id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_DEV}/categories/${id}`, {
         method: 'DELETE',
         credentials: 'include'
       });

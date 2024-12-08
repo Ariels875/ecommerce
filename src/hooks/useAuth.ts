@@ -1,93 +1,57 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 
 interface User {
-  id: number;
-  email: string;
-  rol: string;
-  nombre: string;
+    id: number;
+    email: string;
+    rol: string;
+    nombre: string;
 }
 
-interface AuthState {
-  isAuthenticated: boolean;
-  user: User | null;
-  loading: boolean;
-}
+const useAuth = () => {
+    const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
 
-export const useAuth = () => {
-  const [authState, setAuthState] = useState<AuthState>({
-    isAuthenticated: false,
-    user: null,
-    loading: true
-  });
+    // Verifica si el usuario está autenticado
+    const isAuthenticated = user !== null;
 
-  const checkAuthStatus = useCallback(async () => {
-    setAuthState(prev => ({ ...prev, loading: true }));
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_DEV}/auth/verify`, {
-        credentials: 'include',
-      });
-  
-      if (response.ok) {
-        const data = await response.json();
-        setAuthState({
-          isAuthenticated: true,
-          user: data.user,
-          loading: false
-        });
-      } else {
-        localStorage.removeItem('user');
-        setAuthState({
-          isAuthenticated: false,
-          user: null,
-          loading: false
-        });
-      }
-    } catch (error) {
-      console.error('Error verificando autenticación:', error);
-      localStorage.removeItem('user');
-      setAuthState({
-        isAuthenticated: false,
-        user: null,
-        loading: false
-      });
-    }
-  }, []);
+    const login = async (userData: User) => {
+        setUser(userData);
+        // Aquí puedes guardar el token en localStorage o cookies si es necesario
+        // localStorage.setItem('token', token);
+    };
 
-  useEffect(() => {
-    checkAuthStatus();
-  }, [checkAuthStatus]);
+    const logout = () => {
+        setUser(null);
+        // Aquí puedes eliminar el token de localStorage o cookies si es necesario
+        // localStorage.removeItem('token');
+    };
 
-  const login = useCallback(async (userData: User) => {
-    localStorage.setItem('user', JSON.stringify(userData));
-    setAuthState({
-      isAuthenticated: true,
-      user: userData,
-      loading: false
-    });
-    // Verificar el estado de autenticación después del login
-    await checkAuthStatus();
-  }, [checkAuthStatus]);
+    const checkAuthStatus = async () => {
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_DEV}/auth/verify`, {
+                method: 'GET',
+                credentials: 'include', // Para enviar cookies con la solicitud
+            });
 
-  const logout = useCallback(async () => {
-    try {
-      await fetch(`${import.meta.env.VITE_API_DEV}/auth/logout`, {
-        method: 'POST',
-        credentials: 'include',
-      });
-    } finally {
-      localStorage.removeItem('user');
-      setAuthState({
-        isAuthenticated: false,
-        user: null,
-        loading: false
-      });
-    }
-  }, []);
+            if (response.ok) {
+                const data = await response.json();
+                setUser(data.user);
+            } else {
+                setUser(null);
+            }
+        } catch (error) {
+            console.error('Error al verificar estado de autenticación:', error);
+            setUser(null);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  return {
-    ...authState,
-    login,
-    logout,
-    checkAuthStatus
-  };
+    useEffect(() => {
+        checkAuthStatus();
+    }, []);
+
+    return { user, login, logout, loading, checkAuthStatus, isAuthenticated };
 };
+
+export default useAuth;
