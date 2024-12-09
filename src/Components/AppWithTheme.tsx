@@ -3,14 +3,7 @@ import { ShoppingCart, User, Search, Sun, Moon } from 'lucide-react';
 import { Button } from '../Ui/Button';
 import { Input } from '../Ui/Input';
 import { Badge } from '../Ui/Badge';
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '../Ui/Sheet';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '../Ui/Sheet';
 import { useTheme } from './ThemeContext';
 import ProductCard from './ProductCard';
 import CartItem from './CartItem';

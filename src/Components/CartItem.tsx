@@ -43,10 +43,10 @@ const CartItem: React.FC<CartItemProps> = ({ item, updateQuantity, removeFromCar
         <Button
           variant="ghost"
           size="icon"
-          className="ml-2 transition-all duration-300 hover:bg-red-100 dark:hover:bg-red-900"
+          className=" bg-zinc-200 ml-2 transition-all duration-300 hover:bg-red-100 dark:hover:bg-red-900"
           onClick={() => removeFromCart(item.id)}
         >
-          <X className="h-4 w-4" />
+          <X className="h-4 w-4 dark:text-red-600" />
         </Button>
       </div>
     </div>

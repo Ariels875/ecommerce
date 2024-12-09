@@ -107,7 +107,7 @@ const AdminPanel = () => {
     const method = editingProduct ? 'PUT' : 'POST';
     const url = editingProduct 
       ? `${import.meta.env.VITE_API_DEV}/products/${editingProduct.id}`
-      : `${import.meta.env.VITE_API_DEV}/products/`;
+      : `${import.meta.env.VITE_API_DEV}/products`;
 
     try {
       const response = await fetch(url, {
@@ -118,9 +118,9 @@ const AdminPanel = () => {
         },
         body: JSON.stringify({
           ...productForm,
-          colors: productForm.colors.split(',').map(c => c.trim()),
-          sizes: productForm.sizes.split(',').map(s => s.trim()),
-          images: productForm.images.split(',').map(i => i.trim())
+          colors: productForm.colors.trim(),
+          sizes: productForm.sizes.trim(),
+          images: productForm.images.trim()
         }),
       });
 
@@ -215,12 +215,12 @@ const AdminPanel = () => {
   }
 
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'dark' : ''}`}>
+    <div className={`min-h-screen w-full bg-gray-50 dark:bg-gray-900 flex flex-col ${theme === 'dark' ? 'dark' : ''}`}>
       <nav className="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <span className="text-2xl font-bold text-primary dark:text-primary-foreground dark:text-white">
+              <span className="text-xl sm:text-2xl font-bold text-primary dark:text-primary-foreground">
                 MiTienda Admin
               </span>
             </div>
@@ -258,7 +258,7 @@ const AdminPanel = () => {
         </div>
       </nav>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-7xl">
         <Tabs defaultValue="products" className="space-y-6">
           <TabsList>
             <TabsTrigger value="products" className="flex items-center gap-2">
@@ -281,7 +281,7 @@ const AdminPanel = () => {
                     Nuevo Producto
                   </Button>
                 </DialogTrigger>
-                <DialogContent>
+                <DialogContent className='max-h-[90vh] overflow-y-auto'>
                   <DialogHeader>
                     <DialogTitle>
                       {editingProduct ? 'Editar Producto' : 'Nuevo Producto'}
@@ -536,7 +536,7 @@ const AdminPanel = () => {
                             });
                             setIsCategoryDialogOpen(true);
                           }}
-                          className="mr-2"
+                          className="mr-2 bg-white dark:bg-zinc-900"
                         >
                           <Pencil className="h-4 w-4" />
                         </Button>
@@ -544,7 +544,7 @@ const AdminPanel = () => {
                           variant="ghost"
                           size="icon"
                           onClick={() => handleDeleteCategory(category.id)}
-                          className="text-red-500 hover:text-red-700"
+                          className="bg-white dark:bg-zinc-900 text-red-500 hover:text-red-700"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
