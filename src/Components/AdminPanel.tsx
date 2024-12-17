@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Home, Sun, Moon, LogOut, Plus, Pencil, Trash2, Package, Grid } from 'lucide-react';
 import { useTheme } from './ThemeContext';
 import { Button } from '../Ui/Button';
@@ -215,14 +215,14 @@ const AdminPanel = () => {
   }
 
   return (
-    <div className={`min-h-screen w-full bg-gray-50 dark:bg-gray-900 flex flex-col ${theme === 'dark' ? 'dark' : ''}`}>
-      <nav className="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-10">
+    <div className={`min-h-screen w-full bg-gray-50 dark:backdrop-blur-md dark:bg-black/30 dark:border dark:border-white/50 flex flex-col ${theme === 'dark' ? 'dark' : ''}`}>
+      <nav className="bg-white dark:backdrop-blur-md dark:bg-black/30 dark:border dark:border-white/50 shadow-md sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <span className="text-xl sm:text-2xl font-bold text-primary dark:text-primary-foreground">
-                MiTienda Admin
-              </span>
+              <Link className="text-xl sm:text-2xl font-bold text-primary dark:text-primary-foreground dark:text-white italic" to="/">
+                Admin Panel
+              </Link>
             </div>
             <div className="flex items-center space-x-4">
               <Button
@@ -259,6 +259,11 @@ const AdminPanel = () => {
       </nav>
 
       <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-7xl">
+      <div className="absolute -top-10 left-10 w-44 h-44 dark:bg-pink-500/30 blur-3xl rounded-full -z-20"></div>
+      <div className="absolute bottom-20 left-50 w-44 h-44 dark:bg-red-500/30 blur-3xl rounded-full -z-20"></div>
+      <div className="absolute top-20 right-10 w-44 h-44 dark:bg-yellow-500/30 blur-3xl rounded-full -z-20"></div>
+      <div className="absolute -bottom-30 right-60 w-44 h-44 dark:bg-green-500/30 blur-3xl rounded-full -z-20"></div>
+      <div className="absolute -bottom-10 right-1/4 w-44 h-44 dark:bg-purple-500/30 blur-3xl rounded-full -z-20"></div>
         <Tabs defaultValue="products" className="space-y-6">
           <TabsList>
             <TabsTrigger value="products" className="flex items-center gap-2">
@@ -281,7 +286,7 @@ const AdminPanel = () => {
                     Nuevo Producto
                   </Button>
                 </DialogTrigger>
-                <DialogContent className='max-h-[90vh] overflow-y-auto'>
+                <DialogContent className='max-h-[90vh] overflow-y-auto dark:text-white'>
                   <DialogHeader>
                     <DialogTitle>
                       {editingProduct ? 'Editar Producto' : 'Nuevo Producto'}
@@ -401,7 +406,7 @@ const AdminPanel = () => {
               </Dialog>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
+            <div className="bg-white dark:backdrop-blur-md dark:bg-black/30 dark:border dark:border-white/50 rounded-lg shadow">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -471,7 +476,7 @@ const AdminPanel = () => {
                     Nueva Categoría
                   </Button>
                 </DialogTrigger>
-                <DialogContent>
+                <DialogContent className='max-h-[90vh] overflow-y-auto dark:text-white'>
                   <DialogHeader>
                     <DialogTitle>
                       {editingCategory ? 'Editar Categoría' : 'Nueva Categoría'}
@@ -508,7 +513,7 @@ const AdminPanel = () => {
               </Dialog>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
+            <div className="bg-white dark:backdrop-blur-md dark:bg-black/30 dark:border dark:border-white/50 rounded-lg shadow">
               <Table>
                 <TableHeader>
                   <TableRow>

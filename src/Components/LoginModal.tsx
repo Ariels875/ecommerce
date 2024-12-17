@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X } from 'lucide-react';
 import { Button } from '../Ui/Button';
 import { Input } from '../Ui/Input';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, } from '../Ui/Dialog';
@@ -114,10 +113,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
             Iniciar Sesión
           </Button>
         </form>
-        <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
-          <X className="h-6 w-6" />
-          <span className="sr-only">Cerrar</span>
-        </button>
+
       </DialogContent>
 
       {showToast && (

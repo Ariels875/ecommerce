@@ -74,9 +74,12 @@
   * {
     @apply border-border;
   }
-  body {
+  body, html, #root {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
+    @apply bg-white dark:bg-black text-black dark:text-white;
+    min-height: 100vh;
+    background-color: hsl(var(--background));
   }
 }
 
@@ -87,7 +90,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #000000;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;

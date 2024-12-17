@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '../Ui/Button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../Ui/Select';
@@ -10,6 +11,10 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, addToCart }: { product: Product; addToCart: (product: Product, color: string, size: string) => void }) => {
+  const navigate = useNavigate();
+  const handleCardClick = () => {
+    navigate(`products/${product.id}`);
+  }
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedColor, setSelectedColor] = useState(product.colors[0])
   const [selectedSize, setSelectedSize] = useState(product.sizes[0])
@@ -23,34 +28,34 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, addToCart }: { produ
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+    <div className="bg-white dark:backdrop-blur-md dark:bg-black/30 dark:border dark:border-white/50 rounded-lg shadow-md overflow-hidden">
       <div className="relative">
         <img
           src={product.images[currentImageIndex]}
           alt={`${product.name} - Imagen ${currentImageIndex + 1}`}
-          className="w-full h-48 object-cover"
+          className="w-full h-48 object-cover"  onClick={handleCardClick}
         />
         <button
           onClick={prevImage}
-          className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white dark:bg-gray-800 bg-opacity-50 rounded-full p-1"
+          className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-whitedark:backdrop-blur-md bg-white dark:bg-black/30 dark:border dark:border-white/50 bg-opacity-50 rounded-full p-1"
           aria-label="Imagen anterior"
         >
           <ChevronLeft className="h-6 w-6 text-gray-800 dark:text-gray-200" />
         </button>
         <button
           onClick={nextImage}
-          className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white dark:bg-gray-800 bg-opacity-50 rounded-full p-1"
+          className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-whitedark:backdrop-blur-md bg-white dark:bg-black/30 dark:border dark:border-white/50 bg-opacity-50 rounded-full p-1"
           aria-label="Imagen siguiente"
         >
           <ChevronRight className="h-6 w-6 text-gray-800 dark:text-gray-200" />
         </button>
       </div>
       <div className="p-4">
-        <h3 className="text-lg font-semibold mb-2 dark:text-white">{product.name}</h3>
-        <p className="text-gray-600 dark:text-gray-300 mb-2">{product.description}</p>
+        <h3 className="text-lg font-semibold mb-2 dark:text-white" onClick={handleCardClick}>{product.name}</h3>
+        <p className="text-gray-600 dark:text-gray-300 mb-2" onClick={handleCardClick}>{product.description}</p>
         <div className="flex justify-between items-center mb-2">
-          <span className="text-xl font-bold text-primary dark:text-primary-foreground">${product.price.toFixed(2)}</span>
-          <span className="text-sm text-gray-500 dark:text-gray-400">Stock: {product.stock}</span>
+          <span className="text-xl font-bold text-primary dark:text-primary-foreground" onClick={handleCardClick}>${product.price.toFixed(2)}</span>
+          <span className="text-sm text-gray-500 dark:text-gray-400" onClick={handleCardClick}>Stock: {product.stock}</span>
         </div>
         <div className="mb-2">
           <Select value={selectedColor} onValueChange={setSelectedColor}>
