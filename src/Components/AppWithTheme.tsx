@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingCart, User, Search, Sun, Moon } from 'lucide-react';
+import { ShoppingCart, User, Sun, Moon } from 'lucide-react';
 import { Button } from '../Ui/Button';
-import { Input } from '../Ui/Input';
 import { Badge } from '../Ui/Badge';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '../Ui/Sheet';
 import { useTheme } from './ThemeContext';
@@ -11,6 +10,7 @@ import ProductCard from './ProductCard';
 import CartItem from './CartItem';
 import LoginModal from './LoginModal';
 import { Product, fetchProducts } from './types';
+import { SearchProducts } from './SearchProducts';
 
 const AppWithThemeContent: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -39,12 +39,8 @@ const AppWithThemeContent: React.FC = () => {
             </div>
             <div className="flex items-center space-x-4">
               <div className="hidden sm:block">
-                <Input type="search" placeholder="Buscar productos..." className="w-64" />
+                <SearchProducts/>
               </div>
-              <Button variant="ghost" size="icon" className="transition-colors duration-300 bg-white hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700">
-                <Search className="h-5 w-5 dark:text-white" />
-                <span className="sr-only">Buscar</span>
-              </Button>
               <Button 
                 variant="ghost" 
                 size="icon" 
@@ -151,20 +147,23 @@ const AppWithThemeContent: React.FC = () => {
             <div>
               <h3 className="text-lg font-semibold mb-4">Enlaces rápidos</h3>
               <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors duration-300">Inicio</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors duration-300">Productos</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors duration-300">Sobre nosotros</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors duration-300">Contacto</a></li>
+                <li><Link to="/" className="text-gray-400 hover:text-white transition-colors duration-300">Inicio</Link></li>
+                <li><Link to="/about" className="text-gray-400 hover:text-white transition-colors duration-300">Sobre mi</Link></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors duration-300">WhatsApp</a></li>
               </ul>
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-4">Contáctanos</h3>
-              <p className="text-gray-400">Email: info@mitienda.com</p>
-              <p className="text-gray-400">Teléfono: (123) 456-7890</p>
+              <ul className="space-y-2">
+                <li><a href="mailto:ascastro875@gmail.com" className="text-gray-400 hover:text-white transition-colors duration-300">Email: ascastro875@gmail.com</a></li>
+                <li><a href="telto:+593990518579" className="text-gray-400 hover:text-white transition-colors duration-300">Teléfono: +593990518579</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors duration-300">Linkedin: @ariels875</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors duration-300">GitHub: @ariels875</a></li>
+              </ul>
             </div>
           </div>
           <div className="mt-8 border-t border-gray-700 pt-8 text-center">
-            <p className="text-gray-400">&copy; 2024 MiTienda. Todos los derechos reservados.</p>
+            <p className="text-gray-400">&copy; 2024 Ariels Store. Todos los derechos reservados.</p>
           </div>
         </div>
       </footer>

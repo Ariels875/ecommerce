@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
 import { Home, Sun, Moon, LogOut, Plus, Pencil, Trash2, Package, Grid } from 'lucide-react';
 import { useTheme } from './ThemeContext';
 import { Button } from '../Ui/Button';
@@ -90,12 +91,11 @@ const AdminPanel = () => {
     }
   };
 
+  const { logout } = useAuth();
+
   const handleLogout = async () => {
     try {
-      await fetch(`${import.meta.env.VITE_API_DEV}/auth/logout`, {
-        method: 'POST',
-        credentials: 'include'
-      });
+      await logout();
       navigate('/');
     } catch (error) {
       console.error('Error logging out:', error);

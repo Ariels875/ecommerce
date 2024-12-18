@@ -76,7 +76,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">Iniciar Sesión</DialogTitle>
+          <DialogTitle className="text-2xl font-bold dark:text-white">Iniciar Sesión</DialogTitle>
           <DialogDescription>
             Ingresa tus credenciales para acceder a tu cuenta.
           </DialogDescription>
@@ -84,7 +84,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && <p className="text-red-500">{error}</p>}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-white">
               Correo Electrónico
             </label>
             <Input
@@ -93,11 +93,11 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="mt-1"
+              className="mt-1 dark:text-white"
             />
           </div>
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-white">
               Contraseña
             </label>
             <Input
@@ -106,7 +106,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="mt-1"
+              className="mt-1 dark:text-white"
             />
           </div>
           <Button type="submit" className="w-full">

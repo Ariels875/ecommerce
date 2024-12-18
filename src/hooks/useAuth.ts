@@ -20,11 +20,33 @@ const useAuth = () => {
         // localStorage.setItem('token', token);
     };
 
-    const logout = () => {
-        setUser(null);
-        // Aquí puedes eliminar el token de localStorage o cookies si es necesario
-        // localStorage.removeItem('token');
-    };
+    const logout = async () => {
+        try {
+          // Realizar una solicitud al backend para cerrar sesión y eliminar la cookie
+          const response = await fetch(`${import.meta.env.VITE_API_DEV}/auth/logout`, {
+            method: 'POST',
+            credentials: 'include', // Importante para manejar cookies
+          });
+      
+          if (response.ok) {
+            // Limpiar el estado del usuario
+            setUser(null);
+      
+            // Limpiar cualquier token o datos de autenticación en localStorage
+            localStorage.removeItem('token');
+            
+            // Opcional: Limpiar otros elementos relacionados con la autenticación
+            localStorage.removeItem('user');
+            
+            // Si tienes otros elementos específicos de la sesión, también puedes eliminarlos
+            // localStorage.removeItem('userRole');
+          } else {
+            console.error('Error al cerrar sesión');
+          }
+        } catch (error) {
+          console.error('Error durante el logout:', error);
+        }
+      };
 
     const checkAuthStatus = async () => {
         try {

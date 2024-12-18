@@ -1,5 +1,5 @@
 import "./index.css";
-import { AppWithTheme, ThemeProvider, ProductDetail } from "./Components/index";
+import { AppWithTheme, ThemeProvider, ProductDetail, ResultsPage, About } from "./Components/index";
 import AdminRoute from './Components/AdminRoute';
 import { CartProvider } from './Components/CartContext';
 import { ToastProvider, ToastViewport } from './Ui/Toast';
@@ -15,6 +15,8 @@ function App() {
             <Routes>
               <Route path="/" element={<AppWithTheme />} />
               <Route path="/products/:id" element={<ProductDetail />} />
+              <Route path="/search" element={<ResultsPage />} />
+              <Route path="/about" element={<About />} />
               <Route
                 path="/admin/panel"
                 element={

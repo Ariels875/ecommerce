@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, ShoppingCart, User, Search, Sun, Moon } from 'lucide-react';
 import { Product } from './types';
 import ProductCard from './ProductCard';
 import { useCart } from './CartContext';
+import { SearchProducts } from './SearchProducts';
 import { Button } from '../Ui/Button';
-import { Input } from '../Ui/Input';
 import { Badge } from '../Ui/Badge';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '../Ui/Sheet';
 import { useTheme } from './ThemeContext';
@@ -13,6 +13,76 @@ import LoginModal from './LoginModal';
 import CartItem from './CartItem';
 import { CartProvider } from './CartContext';
 
+
+const CenteredImage = ({ src, alt, className }: { src: string, alt: string, className?: string }) => {
+  const imageRef = useRef<HTMLImageElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleImageLoad = () => {
+      if (!imageRef.current || !containerRef.current) return;
+
+      const img = imageRef.current;
+      const container = containerRef.current;
+
+      // Obtener dimensiones del contenedor y de la imagen
+      const containerWidth = container.clientWidth;
+      const containerHeight = container.clientHeight;
+      
+      // Calcular escala y posicionamiento
+      const imgWidth = img.naturalWidth;
+      const imgHeight = img.naturalHeight;
+
+      // Calcular el modo de ajuste
+      const widthRatio = containerWidth / imgWidth;
+      const heightRatio = containerHeight / imgHeight;
+      const scale = Math.min(widthRatio, heightRatio);
+
+      const scaledWidth = imgWidth * scale;
+      const scaledHeight = imgHeight * scale;
+
+      // Calcular posiciones para centrar
+      const marginLeft = (containerWidth - scaledWidth) / 2;
+      const marginTop = (containerHeight - scaledHeight) / 2;
+
+      // Aplicar estilos
+      img.style.position = 'absolute';
+      img.style.left = `${marginLeft}px`;
+      img.style.top = `${marginTop}px`;
+      img.style.width = `${scaledWidth}px`;
+      img.style.height = `${scaledHeight}px`;
+      img.style.objectFit = 'contain';
+    };
+
+    const imgElement = imageRef.current;
+    if (imgElement) {
+      // Si la imagen ya está cargada
+      if (imgElement.complete) {
+        handleImageLoad();
+      } else {
+        // Esperar a que la imagen se cargue
+        imgElement.addEventListener('load', handleImageLoad);
+        return () => {
+          imgElement.removeEventListener('load', handleImageLoad);
+        };
+      }
+    }
+  }, [src]);
+
+  return (
+    <div 
+      ref={containerRef} 
+      className={`relative w-full h-96 bg-black ${className}`}
+    >
+      <img
+        ref={imageRef}
+        src={src}
+        alt={alt}
+        className="absolute inset-0 max-w-full max-h-full"
+      />
+    </div>
+  );
+};
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
@@ -95,7 +165,7 @@ const ProductDetail: React.FC = () => {
             </div>
             <div className="flex items-center space-x-4">
               <div className="hidden sm:block">
-                <Input type="search" placeholder="Buscar productos..." className="w-64" />
+                <SearchProducts />
               </div>
               <Button variant="ghost" size="icon" className="transition-colors duration-300 bg-white hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700">
                 <Search className="h-5 w-5 dark:text-white" />
@@ -180,20 +250,20 @@ const ProductDetail: React.FC = () => {
         <div className="flex flex-col md:flex-row gap-8">
           {/* Galería de imágenes */}
           <div className="relative w-full md:w-1/2">
-            <img
+            <CenteredImage
               src={product.images[currentImageIndex]}
               alt={product.name}
               className="w-full h-96 object-cover rounded-lg"
             />
             <button
               onClick={prevImage}
-              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-800 dark:text-white dark:bg-gray-800 bg-opacity-50 rounded-full p-1"
+              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white dark:text-white dark:bg-gray-800 bg-opacity-50 rounded-full p-1"
             >
               <ChevronLeft className="h-6 w-6 text-gray-800 dark:text-gray-200" />
             </button>
             <button
               onClick={nextImage}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-800 dark:text-white dark:bg-gray-800 bg-opacity-50 rounded-full p-1"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white dark:text-white dark:bg-gray-800 bg-opacity-50 rounded-full p-1"
             >
               <ChevronRight className="h-6 w-6 text-gray-800 dark:text-gray-200" />
             </button>
@@ -287,20 +357,23 @@ const ProductDetail: React.FC = () => {
             <div>
               <h3 className="text-lg font-semibold mb-4">Enlaces rápidos</h3>
               <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors duration-300">Inicio</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors duration-300">Productos</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors duration-300">Sobre nosotros</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors duration-300">Contacto</a></li>
+                <li><Link to="/" className="text-gray-400 hover:text-white transition-colors duration-300">Inicio</Link></li>
+                <li><Link to="/about" className="text-gray-400 hover:text-white transition-colors duration-300">Sobre mi</Link></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors duration-300">WhatsApp</a></li>
               </ul>
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-4">Contáctanos</h3>
-              <p className="text-gray-400">Email: info@mitienda.com</p>
-              <p className="text-gray-400">Teléfono: (123) 456-7890</p>
+              <ul className="space-y-2">
+                <li><a href="mailto:ascastro875@gmail.com" className="text-gray-400 hover:text-white transition-colors duration-300">Email: ascastro875@gmail.com</a></li>
+                <li><a href="telto:+593990518579" className="text-gray-400 hover:text-white transition-colors duration-300">Teléfono: +593990518579</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors duration-300">Linkedin: @ariels875</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors duration-300">GitHub: @ariels875</a></li>
+              </ul>
             </div>
           </div>
           <div className="mt-8 border-t border-gray-700 pt-8 text-center">
-            <p className="text-gray-400">&copy; 2024 MiTienda. Todos los derechos reservados.</p>
+            <p className="text-gray-400">&copy; 2024 Ariels Store. Todos los derechos reservados.</p>
           </div>
         </div>
       </footer>
