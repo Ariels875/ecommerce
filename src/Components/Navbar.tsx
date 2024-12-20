@@ -1,20 +1,19 @@
 // Navbar.tsx
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingCart, User, Sun, Moon } from 'lucide-react';
+import { ShoppingCart, Sun, Moon } from 'lucide-react';
 import { Button } from '../Ui/Button';
 import { Badge } from '../Ui/Badge';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '../Ui/Sheet';
 import { useTheme } from './ThemeContext';
 import { useCart } from './CartContext';
 import CartItem from './CartItem';
-import LoginModal from './LoginModal';
 import { SearchProducts } from './SearchProducts';
+import UserDropdown from './UserDropdown';
 
 const Navbar: React.FC = () => {
   const { cart, updateQuantity, removeFromCart, totalItems, totalPrice } = useCart();
   const { theme, toggleTheme } = useTheme();
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
   return (
     <nav className="bg-white dark:backdrop-blur-md dark:bg-black/30 dark:border dark:border-white/50 rounded-lg p-4 shadow-md sticky top-0 z-10">
@@ -29,15 +28,7 @@ const Navbar: React.FC = () => {
             <div className="hidden sm:block">
               <SearchProducts />
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="transition-colors duration-300 bg-white hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700"
-              onClick={() => setIsLoginModalOpen(true)}
-            >
-              <User className="h-5 w-5 dark:text-white" />
-              <span className="sr-only">Cuenta</span>
-            </Button>
+            <UserDropdown />
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="relative transition-colors duration-300 bg-white hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700">
@@ -94,7 +85,6 @@ const Navbar: React.FC = () => {
           </div>
         </div>
       </div>
-      <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
     </nav>
   );
 };
