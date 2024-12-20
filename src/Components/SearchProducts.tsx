@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { Input } from '../Ui/Input';
 import { Button } from '../Ui/Button';
 import { Search } from 'lucide-react';
-import { Product } from './types';
 
 interface SearchProductsProps {
   variant?: 'default' | 'modal';
@@ -14,7 +13,6 @@ export const SearchProducts: React.FC<SearchProductsProps> = ({
   onClose 
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState<Product[]>([]);
   const navigate = useNavigate();
 
   const handleSearch = async () => {
@@ -31,10 +29,6 @@ export const SearchProducts: React.FC<SearchProductsProps> = ({
 
       const results = await response.json();
       
-      // Aquí no necesitamos cambios especiales ya que el backend ahora devuelve los productos formateados
-
-      setSearchResults(results);
-
       // Si hay resultados, navegar a una página de resultados
       if (results.length > 0) {
         navigate('/search', { 
