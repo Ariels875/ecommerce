@@ -5,8 +5,8 @@ import { CartItem as CartItemType } from './types';
 
 interface CartItemProps {
   item: CartItemType;
-  updateQuantity: (productId: number, newQuantity: number) => void;
-  removeFromCart: (productId: number) => void;
+  updateQuantity: (identifier: string, newQuantity: number) => void;
+  removeFromCart: (identifier: string) => void;
 }
 
 const CartItem: React.FC<CartItemProps> = ({ item, updateQuantity, removeFromCart }) => {
@@ -25,7 +25,7 @@ const CartItem: React.FC<CartItemProps> = ({ item, updateQuantity, removeFromCar
         <Button
           variant="outline"
           size="icon"
-          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+          onClick={() => updateQuantity(item.identifier, item.quantity - 1)}
           disabled={item.quantity <= 1}
           className="transition-all duration-300 hover:bg-gray-100 dark:hover:bg-gray-700"
         >
@@ -35,7 +35,7 @@ const CartItem: React.FC<CartItemProps> = ({ item, updateQuantity, removeFromCar
         <Button
           variant="outline"
           size="icon"
-          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+          onClick={() => updateQuantity(item.identifier, item.quantity + 1)}
           className="transition-all duration-300 hover:bg-gray-100 dark:hover:bg-gray-700"
         >
           <Plus className="h-4 w-4" />
@@ -44,7 +44,7 @@ const CartItem: React.FC<CartItemProps> = ({ item, updateQuantity, removeFromCar
           variant="ghost"
           size="icon"
           className=" bg-zinc-200 ml-2 transition-all duration-300 hover:bg-red-100 dark:hover:bg-red-900"
-          onClick={() => removeFromCart(item.id)}
+          onClick={() => removeFromCart(item.identifier)}
         >
           <X className="h-4 w-4 dark:text-red-600" />
         </Button>

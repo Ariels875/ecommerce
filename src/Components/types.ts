@@ -16,6 +16,7 @@ export interface CartItem extends Product {
   quantity: number;
   selectedColor: string;
   selectedSize: string;
+  identifier: string;
 }
 
 export const fetchProducts = async (): Promise<Product[]> => {

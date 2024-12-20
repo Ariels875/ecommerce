@@ -50,10 +50,10 @@ const Navbar: React.FC = () => {
                       : `${totalItems} ${totalItems === 1 ? 'artículo' : 'artículos'} en tu carrito`}
                   </SheetDescription>
                 </SheetHeader>
-                <div className="mt-8">
+                <div className="mt-8 dark:text-white">
                   {cart.map((item) => (
                     <CartItem
-                      key={`${item.id}-${item.selectedColor}-${item.selectedSize}`}
+                      key={`${item.identifier}-${item.selectedColor}-${item.selectedSize}`}
                       item={item}
                       updateQuantity={updateQuantity}
                       removeFromCart={removeFromCart}
@@ -64,7 +64,7 @@ const Navbar: React.FC = () => {
                   <div className="mt-4">
                     <div className="flex justify-between items-center mb-4">
                       <span className="font-semibold dark:text-white">Total:</span>
-                      <span className="font-bold text-lg text-primary dark:text-primary-foreground">
+                      <span className="font-bold text-lg text-primary dark:text-primary-foreground dark:text-white">
                         ${totalPrice.toFixed(2)}
                       </span>
                     </div>
@@ -94,7 +94,7 @@ const Footer: React.FC = () => {
   return (
     <footer className="bg-gray-800 text-white dark:backdrop-blur-md dark:bg-black/30 dark:border dark:border-white/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grentifier grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <h3 className="text-lg font-semibold mb-4">Acerca de nosotros</h3>
             <p className="text-gray-400">

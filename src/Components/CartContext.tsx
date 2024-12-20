@@ -1,29 +1,35 @@
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import { Product, CartItem } from './types';
 
 interface CartContextType {
   cart: CartItem[];
   addToCart: (product: Product, color: string, size: string) => void;
-  updateQuantity: (productId: number, newQuantity: number) => void;
-  removeFromCart: (productId: number) => void;
+  updateQuantity: (identifier: string, newQuantity: number) => void;
+  removeFromCart: (identifier: string) => void;
   totalItems: number;
   totalPrice: number;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
+ 
+const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [cart, setCart] = useState<CartItem[]>(() => {
+    const storedCart = localStorage.getItem('cart');
+    return storedCart ? JSON.parse(storedCart) : [];
+  });
 
-export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [cart, setCart] = useState<CartItem[]>([]);
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }, [cart]);
 
   const addToCart = (product: Product, color: string, size: string) => {
     setCart((prevCart) => {
-      const existingItem = prevCart.find(
-        (item) => item.id === product.id && item.selectedColor === color && item.selectedSize === size
-      );
+      const identifier = `${product.id}-${color}-${size}`;
+      const existingItem = prevCart.find((item) => item.identifier === identifier);
       
       if (existingItem) {
         return prevCart.map((item) =>
-          item.id === product.id && item.selectedColor === color && item.selectedSize === size
+          item.identifier === identifier
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
@@ -31,23 +37,23 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       
       return [
         ...prevCart,
-        { ...product, quantity: 1, selectedColor: color, selectedSize: size }
+        { ...product, quantity: 1, selectedColor: color, selectedSize: size, identifier }
       ];
     });
   };
 
-  const updateQuantity = (productId: number, newQuantity: number) => {
+  const updateQuantity = (identifier: string, newQuantity: number) => {
     if (newQuantity < 1) return;
     
     setCart((prevCart) =>
       prevCart.map((item) =>
-        item.id === productId ? { ...item, quantity: newQuantity } : item
+        item.identifier === identifier ? { ...item, quantity: newQuantity } : item
       )
     );
   };
 
-  const removeFromCart = (productId: number) => {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
+  const removeFromCart = (identifier: string) => {
+    setCart((prevCart) => prevCart.filter((item) => item.identifier !== identifier));
   };
 
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -69,10 +75,12 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   );
 };
 
-export const useCart = () => {
+const useCart = () => {
   const context = useContext(CartContext);
   if (context === undefined) {
     throw new Error('useCart must be used within a CartProvider');
   }
   return context;
 };
+
+export { CartProvider, useCart };
