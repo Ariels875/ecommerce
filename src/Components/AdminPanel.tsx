@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import useAuth from '../hooks/useAuth';
+import { useAuth } from '../hooks/useAuth';
 import ImageUpload from './ImageUpload';
 import { Home, Sun, Moon, LogOut, Plus, Pencil, Trash2, Package, Grid } from 'lucide-react';
 import { useTheme } from './ThemeContext';

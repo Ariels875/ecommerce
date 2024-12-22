@@ -3,7 +3,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Button } from '../Ui/Button';
 import { User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import useAuth from '../hooks/useAuth';
+import { useAuth } from '../hooks/useAuth';
 import LoginModal from './LoginModal';
 
 const UserDropdown = () => {

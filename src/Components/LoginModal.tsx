@@ -4,7 +4,7 @@ import { Button } from '../Ui/Button';
 import { Input } from '../Ui/Input';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, } from '../Ui/Dialog';
 import { Toast, ToastTitle, ToastDescription } from '../Ui/Toast';
-import useAuth from '../hooks/useAuth';
+import { useAuth } from '../hooks/useAuth';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -53,7 +53,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
       }
 
       await login(data.user);
-      await checkAuthStatus(true);
+      await checkAuthStatus();
 
       onClose();
       setEmail('');
