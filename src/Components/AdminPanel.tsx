@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
+import ImageUpload from './ImageUpload';
 import { Home, Sun, Moon, LogOut, Plus, Pencil, Trash2, Package, Grid } from 'lucide-react';
 import { useTheme } from './ThemeContext';
 import { Button } from '../Ui/Button';
@@ -33,12 +34,14 @@ const AdminPanel = () => {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
   const [products, setProducts] = useState<Product[]>([]);
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isProductDialogOpen, setIsProductDialogOpen] = useState(false);
   const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [productForm, setProductForm] = useState({
     name: '',
@@ -104,45 +107,90 @@ const AdminPanel = () => {
 
   const handleProductSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+  
+    // Si ya se está procesando, no continuar
+    if (isSubmitting) return;
+  
+    setIsSubmitting(true); // Bloquea el botón
     const method = editingProduct ? 'PUT' : 'POST';
-    const url = editingProduct 
+    const url = editingProduct
       ? `${import.meta.env.VITE_API_DEV}/products/${editingProduct.id}`
       : `${import.meta.env.VITE_API_DEV}/products`;
-
+  
     try {
-      const response = await fetch(url, {
-        method,
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...productForm,
-          colors: productForm.colors.trim(),
-          sizes: productForm.sizes.trim(),
-          images: productForm.images.trim()
-        }),
-      });
-
-      if (response.ok) {
-        setIsProductDialogOpen(false);
-        fetchProducts();
-        setProductForm({
-          name: '',
-          description: '',
-          price: 0,
-          stock: 0,
-          category_id: null,
-          colors: '',
-          sizes: '',
-          images: ''
+      if (method === 'POST') {
+        // Para crear un nuevo producto
+        const formData = new FormData();
+  
+        formData.append('name', productForm.name);
+        formData.append('description', productForm.description);
+        formData.append('price', productForm.price.toString());
+        formData.append('stock', productForm.stock.toString());
+        formData.append('category_id', productForm.category_id?.toString() || '');
+        formData.append('colors', productForm.colors.trim());
+        formData.append('sizes', productForm.sizes.trim());
+  
+        // Agregar las imágenes como archivos
+        selectedImages.forEach(image => {
+          formData.append('images', image);
         });
-        setEditingProduct(null);
+  
+        const response = await fetch(url, {
+          method: 'POST',
+          credentials: 'include',
+          body: formData,
+        });
+  
+        if (response.ok) {
+          handleSuccess();
+        } else {
+          throw new Error('Error al crear el producto');
+        }
+      } else {
+        // Para actualizar un producto existente
+        const response = await fetch(url, {
+          method: 'PUT',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ...productForm,
+            colors: productForm.colors.trim(),
+            sizes: productForm.sizes.trim(),
+            images: productForm.images.trim(),
+          }),
+        });
+  
+        if (response.ok) {
+          handleSuccess();
+        } else {
+          throw new Error('Error al actualizar el producto');
+        }
       }
     } catch (error) {
       console.error('Error submitting product:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
+  
+  const handleSuccess = () => {
+    setIsProductDialogOpen(false);
+    fetchProducts();
+    setProductForm({
+      name: '',
+      description: '',
+      price: 0,
+      stock: 0,
+      category_id: null,
+      colors: '',
+      sizes: '',
+      images: '',
+    });
+    setSelectedImages([]); // Limpiar las imágenes seleccionadas
+    setEditingProduct(null);
+  };  
 
   const handleCategorySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -389,17 +437,18 @@ const AdminPanel = () => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="images">URLs de imágenes (separadas por coma)</Label>
-                      <Input
-                        id="images"
-                        value={productForm.images}
-                        onChange={(e) =>
-                          setProductForm({ ...productForm, images: e.target.value })
-                        }
+                      <Label>Imágenes</Label>
+                      <ImageUpload 
+                        onChange={setSelectedImages}
                       />
+                      {selectedImages.length > 0 && (
+                        <p className="text-sm text-gray-500">
+                          {selectedImages.length} {selectedImages.length === 1 ? 'imagen seleccionada' : 'imágenes seleccionadas'}
+                        </p>
+                      )}
                     </div>
-                    <Button type="submit" className="w-full">
-                      {editingProduct ? 'Actualizar' : 'Crear'} Producto
+                    <Button type="submit" className="w-full" disabled={isSubmitting}>
+                      {isSubmitting ? 'Procesando...' : editingProduct ? 'Actualizar' : 'Crear'} Producto
                     </Button>
                   </form>
                 </DialogContent>

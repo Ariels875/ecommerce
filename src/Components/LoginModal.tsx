@@ -53,7 +53,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
       }
 
       await login(data.user);
-      await checkAuthStatus();
+      await checkAuthStatus(true);
 
       onClose();
       setEmail('');

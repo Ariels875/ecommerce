@@ -134,19 +134,19 @@ const Footer: React.FC = () => {
               </li>
               <li>
                 <a
-                  href="telto:+593990518579"
+                  href="tel:+593990518579"
                   className="text-gray-400 hover:text-white transition-colors duration-300"
                 >
                   Teléfono: +593990518579
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors duration-300">
+                <a href="https://www.linkedin.com/in/ariels875/" className="text-gray-400 hover:text-white transition-colors duration-300">
                   Linkedin: @ariels875
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors duration-300">
+                <a href="https://github.com/Ariels875" className="text-gray-400 hover:text-white transition-colors duration-300">
                   GitHub: @ariels875
                 </a>
               </li>
