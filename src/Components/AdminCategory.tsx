@@ -27,7 +27,7 @@ const AdminCategory = () => {
 
   useEffect(() => {
     fetchCategories().finally(() => setIsLoading(false));
-  }, []);
+  }, [fetchCategories]);
 
   if (isLoading) {
     return (
