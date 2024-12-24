@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
+import { Dialog, DialogPanel, DialogTitle, Description } from '@headlessui/react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../Ui/Button';
 import { Input } from '../Ui/Input';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, } from '../Ui/Dialog';
 import { Toast, ToastTitle, ToastDescription } from '../Ui/Toast';
 import { useAuth } from '../hooks/useAuth';
 
@@ -52,20 +52,21 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         throw new Error(data.error || 'Error al iniciar sesión');
       }
 
-      await login(data.user);
-      await checkAuthStatus();
-
-      onClose();
       setEmail('');
       setPassword('');
+      onClose();
+      await login(data.user);
+      await checkAuthStatus();
       setShowToast(true);
 
-      // Redirigir inmediatamente después de confirmar la autenticación
-      if (data.user.rol === 'administrador') {
-        navigate('/admin/panel');
-      } else {
-        navigate('/');
-      }
+      setTimeout(() => {
+        if (data.user.rol === 'administrador') {
+          navigate('/admin/panel');
+        } else {
+          navigate('/');
+        }
+      }, 100);
+      
     } catch (error) {
       console.error('Error durante el login:', error);
       setError(error instanceof Error ? error.message : 'Error al iniciar sesión');
@@ -73,48 +74,72 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-bold dark:text-white">Iniciar Sesión</DialogTitle>
-          <DialogDescription>
-            Ingresa tus credenciales para acceder a tu cuenta.
-          </DialogDescription>
-        </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {error && <p className="text-red-500">{error}</p>}
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-white">
-              Correo Electrónico
-            </label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="mt-1 dark:text-white"
-            />
-          </div>
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-white">
-              Contraseña
-            </label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="mt-1 dark:text-white"
-            />
-          </div>
-          <Button type="submit" className="w-full">
-            Iniciar Sesión
-          </Button>
-        </form>
+    <>
+      <Dialog open={isOpen} onClose={onClose} className="relative z-50 dark:text-white">
+        <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+        
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+          <DialogPanel className="mx-auto max-w-sm w-full rounded-lg bg-white dark:bg-neutral-900 p-6 shadow-xl">
+            <DialogTitle className="text-2xl font-bold mb-2 dark:text-white">
+              Iniciar Sesión
+            </DialogTitle>
+            <Description className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+              Ingresa tus credenciales para acceder a tu cuenta.
+            </Description>
 
-      </DialogContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {error && (
+                <div className="p-3 rounded bg-red-50 border border-red-200">
+                  <p className="text-red-500 text-sm">{error}</p>
+                </div>
+              )}
+              
+              <div>
+                <label 
+                  htmlFor="email" 
+                  className="block text-sm font-medium text-gray-700 dark:text-white mb-1"
+                >
+                  Correo Electrónico
+                </label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="w-full dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label 
+                  htmlFor="password" 
+                  className="block text-sm font-medium text-gray-700 dark:text-white mb-1"
+                >
+                  Contraseña
+                </label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="w-full dark:text-white"
+                />
+              </div>
+
+              <div className="flex gap-2 justify-end pt-4">
+                <Button type="button" variant="outline" onClick={onClose}>
+                  Cancelar
+                </Button>
+                <Button type="submit">
+                  Iniciar Sesión
+                </Button>
+              </div>
+            </form>
+          </DialogPanel>
+        </div>
+      </Dialog>
 
       {showToast && (
         <Toast onOpenChange={() => setShowToast(false)}>
@@ -122,7 +147,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           <ToastDescription>{`Bienvenido ${email}`}</ToastDescription>
         </Toast>
       )}
-    </Dialog>
+    </>
   );
 };
 

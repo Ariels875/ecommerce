@@ -17,6 +17,13 @@ interface CachedData {
   products: Product[];
 }
 
+export interface CartItem extends Product {
+  quantity: number;
+  selectedColor: string;
+  selectedSize: string;
+  identifier: string;
+}
+
 const CACHE_DURATION = 60 * 60 * 1000;
 const CACHE_KEY = 'cached_products';
 
