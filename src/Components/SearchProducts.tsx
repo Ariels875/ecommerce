@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Input } from '../Ui/Input';
 import { Button } from '../Ui/Button';
 import { Search } from 'lucide-react';
+import { API_URL } from './types';
 
 interface SearchProductsProps {
   variant?: 'default' | 'modal';
@@ -20,7 +21,7 @@ export const SearchProducts: React.FC<SearchProductsProps> = ({
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_DEV}/products/search?query=${encodeURIComponent(searchTerm)}`
+        `${API_URL}/products/search?query=${encodeURIComponent(searchTerm)}`
       );
       
       if (!response.ok) {

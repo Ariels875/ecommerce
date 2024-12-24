@@ -9,6 +9,7 @@ import { useTheme } from './ThemeContext';
 import LoginModal from './LoginModal';
 import { CartProvider } from './CartContext';
 import { Navbar, Footer } from './Navbar';
+import { fetchProductDetails, fetchRelatedProducts } from '../api/products';
 
 
 const CenteredImage = ({ src, alt, className }: { src: string, alt: string, className?: string }) => {
@@ -90,45 +91,41 @@ const ProductDetail: React.FC = () => {
   const { addToCart } = useCart();
   const { theme } = useTheme();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch del producto actual
   useEffect(() => {
-    const fetchProduct = async () => {
+    const loadProductData = async () => {
+      if (!id) return;
+      
+      setIsLoading(true);
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_DEV}/products/${id}`);
-        const data = await response.json();
-        setProduct(data);
+        const productData = await fetchProductDetails(id);
         
-        // Establecer color y talla predeterminados
-        if (data.colors && data.colors.length > 0) {
-          setSelectedColor(data.colors[0]);
-        }
-        if (data.sizes && data.sizes.length > 0) {
-          setSelectedSize(data.sizes[0]);
-        }
+        if (productData) {
+          setProduct(productData);
+          
+          // Establecer valores predeterminados
+          if (productData.colors?.length > 0) {
+            setSelectedColor(productData.colors[0]);
+          }
+          if (productData.sizes?.length > 0) {
+            setSelectedSize(productData.sizes[0]);
+          }
 
-        // Llama a los productos relacionados por categoría
-        if (data?.category_id) {
-          fetchRelatedProducts(data.category_id);
+          // Cargar productos relacionados
+          if (productData.category_id) {
+            const relatedData = await fetchRelatedProducts(productData.category_id, id);
+            setRelatedProducts(relatedData);
+          }
         }
       } catch (error) {
-        console.error("Error al cargar el producto:", error);
+        console.error("Error loading product:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    const fetchRelatedProducts = async (categoryId: number) => {
-      try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_DEV}/products?category_id=${categoryId}&exclude_id=${id}`
-        );
-        const data = await response.json();
-        setRelatedProducts(data);
-      } catch (error) {
-        console.error("Error al cargar productos relacionados:", error);
-      }
-    };
-
-    fetchProduct();
+    loadProductData();
   }, [id]);
 
   const handleAddToCart = () => {
@@ -146,6 +143,14 @@ const ProductDetail: React.FC = () => {
       (prevIndex - 1 + (product?.images.length || 1)) % (product?.images.length || 1)
     );
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   if (!product) {
     return <div className="text-center text-gray-600">Cargando...</div>;

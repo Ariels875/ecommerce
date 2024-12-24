@@ -9,18 +9,9 @@ import { Label } from '../Ui/Label';
 import { Textarea } from '../Ui/Textarea';
 import { TabsContent } from '../Ui/Tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../Ui/Table';
+import { Product } from './types';
+import { fetchNewProducts, submitProduct, deleteProduct } from '../api/products';
 
-interface Product {
-    id: number;
-    name: string;
-    description: string;
-    price: number;
-    stock: number;
-    category_id: number | null;
-    colors: string[];
-    sizes: string[];
-    images: string[];
-}
 
 const initialFormState = {
     name: '',
@@ -43,23 +34,19 @@ const AdminProduct = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [productForm, setProductForm] = useState(initialFormState);
 
-    const fetchProducts = async () => {
-        try {
-            const response = await fetch(`${import.meta.env.VITE_API_DEV}/products`, {
-                credentials: 'include'
-            });
-            if (response.ok) {
-                const data = await response.json();
-                setProducts(data);
-            }
-        } catch (error) {
-            console.error('Error fetching products:', error);
-        }
-    };
-
     useEffect(() => {
-        Promise.all([fetchProducts()])
-            .finally(() => setIsLoading(false));
+        const loadProducts = async () => {
+            try {
+                const products = await fetchNewProducts();
+                setProducts(products);
+            } catch (error) {
+                console.error('Error loading products:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+    
+        loadProducts();
     }, []);
 
     const handleOpenDialog = (product: Product | null = null) => {
@@ -94,81 +81,28 @@ const AdminProduct = () => {
         if (isSubmitting) return;
 
         setIsSubmitting(true);
-        const method = editingProduct ? 'PUT' : 'POST';
-        const url = editingProduct
-            ? `${import.meta.env.VITE_API_DEV}/products/${editingProduct.id}`
-            : `${import.meta.env.VITE_API_DEV}/products`;
-
         try {
-            if (method === 'POST') {
-                const formData = new FormData();
-                formData.append('name', productForm.name);
-                formData.append('description', productForm.description);
-                formData.append('price', productForm.price.toString());
-                formData.append('stock', productForm.stock.toString());
-                formData.append('category_id', productForm.category_id?.toString() || '');
-                formData.append('colors', productForm.colors.trim());
-                formData.append('sizes', productForm.sizes.trim());
-
-                selectedImages.forEach(image => {
-                    formData.append('images', image);
-                });
-
-                const response = await fetch(url, {
-                    method: 'POST',
-                    credentials: 'include',
-                    body: formData,
-                });
-
-                if (response.ok) {
-                    handleSuccess();
-                }
-            } else {
-                const response = await fetch(url, {
-                    method: 'PUT',
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        ...productForm,
-                        colors: productForm.colors.trim(),
-                        sizes: productForm.sizes.trim(),
-                        images: productForm.images.trim(),
-                    }),
-                });
-
-                if (response.ok) {
-                    handleSuccess();
-                }
+            const success = await submitProduct(productForm, editingProduct, selectedImages);
+            if (success) {
+                handleSuccess();
             }
-        } catch (error) {
-            console.error('Error submitting product:', error);
         } finally {
             setIsSubmitting(false);
         }
     };
 
-    const handleSuccess = () => {
-        handleCloseDialog();
-        fetchProducts();
-    };
-
     const handleDeleteProduct = async (id: number) => {
         if (!confirm('¿Estás seguro de que deseas eliminar este producto?')) return;
 
-        try {
-            const response = await fetch(`${import.meta.env.VITE_API_DEV}/products/${id}`, {
-                method: 'DELETE',
-                credentials: 'include'
-            });
-
-            if (response.ok) {
-                fetchProducts();
-            }
-        } catch (error) {
-            console.error('Error deleting product:', error);
+        const success = await deleteProduct(id);
+        if (success) {
+            fetchNewProducts();
         }
+    };
+
+    const handleSuccess = () => {
+        handleCloseDialog();
+        fetchNewProducts();
     };
 
     if (isLoading) {

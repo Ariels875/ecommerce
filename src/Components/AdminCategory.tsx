@@ -8,12 +8,8 @@ import { Label } from '../Ui/Label';
 import { Textarea } from '../Ui/Textarea';
 import { TabsContent } from '../Ui/Tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../Ui/Table';
-
-interface Category {
-    id: number;
-    name: string;
-    description: string;
-}
+import { Category } from './types';
+import { submitCategory, deleteCategory } from '../api/categories';
 
 const initialFormState = {
     name: '',
@@ -53,22 +49,11 @@ const AdminCategory = () => {
 
     const handleCategorySubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const method = editingCategory ? 'PUT' : 'POST';
-        const url = editingCategory
-            ? `${import.meta.env.VITE_API_DEV}/categories/${editingCategory.id}`
-            : `${import.meta.env.VITE_API_DEV}/categories`;
-
+        
         try {
-            const response = await fetch(url, {
-                method,
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(categoryForm),
-            });
+            const success = await submitCategory(categoryForm, editingCategory);
 
-            if (response.ok) {
+            if (success) {
                 handleCloseDialog();
                 fetchCategories();
             }
@@ -81,12 +66,9 @@ const AdminCategory = () => {
         if (!confirm('¿Estás seguro de que deseas eliminar esta categoría?')) return;
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_DEV}/categories/${id}`, {
-                method: 'DELETE',
-                credentials: 'include'
-            });
-
-            if (response.ok) {
+            const success = await deleteCategory(id);
+            
+            if (success) {
                 fetchCategories();
             }
         } catch (error) {

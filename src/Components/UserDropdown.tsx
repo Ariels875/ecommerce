@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Menu, Transition } from '@headlessui/react';
+import { Menu, Transition, MenuItem, MenuItems, MenuButton } from '@headlessui/react';
 import { Button } from '../Ui/Button';
 import { User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -31,7 +31,7 @@ const UserDropdown = () => {
   return (
     <>
       <Menu as="div" className="relative">
-        <Menu.Button as={Fragment}>
+        <MenuButton as={Fragment}>
           <Button
             variant="ghost"
             size="icon"
@@ -40,7 +40,7 @@ const UserDropdown = () => {
             <User className="h-5 w-5 dark:text-white" />
             <span className="sr-only">Cuenta</span>
           </Button>
-        </Menu.Button>
+        </MenuButton>
 
         <Transition
           as={Fragment}
@@ -51,56 +51,56 @@ const UserDropdown = () => {
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+          <MenuItems className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
             {isAuthenticated ? (
               <div className="p-1">
-                <Menu.Item>
+                <MenuItem>
                   <div className="px-2 py-1.5 text-sm font-medium text-gray-900 dark:text-white">
                     {user?.nombre || user?.email}
                   </div>
-                </Menu.Item>
+                </MenuItem>
                 {user?.rol === 'administrador' && (
-                  <Menu.Item>
+                  <MenuItem>
                     {({ active }) => (
                       <button
                         onClick={handleAdminPanel}
                         className={`${
-                          active ? 'bg-gray-100 dark:bg-gray-700' : ''
+                          active ? 'bg-gray-100 dark:bg-gray-700' : 'bg-gray-100 dark:bg-gray-700'
                         } group flex w-full items-center rounded-md px-2 py-1.5 text-sm text-gray-900 dark:text-white`}
                       >
                         Panel de Administrador
                       </button>
                     )}
-                  </Menu.Item>
+                  </MenuItem>
                 )}
-                <Menu.Item>
+                <MenuItem>
                   {({ active }) => (
                     <button
                       onClick={handleLogout}
                       className={`${
-                        active ? 'bg-gray-100 dark:bg-gray-700' : ''
+                        active ? 'bg-gray-100 dark:bg-gray-700' : 'bg-gray-100 dark:bg-gray-700'
                       } group flex w-full items-center rounded-md px-2 py-1.5 text-sm text-gray-900 dark:text-white`}
                     >
                       Cerrar Sesión
                     </button>
                   )}
-                </Menu.Item>
+                </MenuItem>
               </div>
             ) : (
-              <Menu.Item>
+              <MenuItem>
                 {({ active }) => (
                   <button
                     onClick={handleLoginClick}
                     className={`${
-                      active ? 'bg-gray-100 dark:bg-gray-700' : ''
+                      active ? 'bg-gray-100 dark:bg-gray-700' : 'bg-gray-100 dark:bg-gray-700'
                     } group flex w-full items-center rounded-md px-2 py-1.5 text-sm text-gray-900 dark:text-white`}
                   >
                     Iniciar Sesión
                   </button>
                 )}
-              </Menu.Item>
+              </MenuItem>
             )}
-          </Menu.Items>
+          </MenuItems>
         </Transition>
       </Menu>
 

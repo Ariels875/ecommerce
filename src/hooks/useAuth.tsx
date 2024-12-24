@@ -1,5 +1,6 @@
 // AuthContext.tsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { API_URL } from '../Components/types';
 
 interface User {
     id: number;
@@ -38,7 +39,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const logout = async () => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_DEV}/auth/logout`, {
+            const response = await fetch(`${API_URL}/auth/logout`, {
                 method: 'POST',
                 credentials: 'include',
             });
@@ -55,7 +56,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const checkAuthStatus = async () => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_DEV}/auth/verify`, {
+            const response = await fetch(`${API_URL}/auth/verify`, {
                 method: 'GET',
                 credentials: 'include',
             });

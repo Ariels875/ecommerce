@@ -5,6 +5,8 @@ import { Button } from '../Ui/Button';
 import { Input } from '../Ui/Input';
 import { Toast, ToastTitle, ToastDescription } from '../Ui/Toast';
 import { useAuth } from '../hooks/useAuth';
+import { API_URL } from './types';
+
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -35,7 +37,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     setError(null);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_DEV}/auth/login`, {
+      const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

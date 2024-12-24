@@ -3,7 +3,8 @@ import { useTheme } from './ThemeContext';
 import { CartProvider, useCart } from './CartContext';
 import ProductCard from './ProductCard';
 import LoginModal from './LoginModal';
-import { Product, fetchProducts } from './types';
+import { Product } from './types';
+import { fetchProducts } from '../api/products';
 import { Navbar, Footer } from './Navbar';
 
 const AppWithThemeContent: React.FC = () => {

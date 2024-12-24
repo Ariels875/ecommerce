@@ -1,10 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-
-interface Category {
-  id: number;
-  name: string;
-  description: string;
-}
+import { Category } from './types';
+import { fetchNewCategories as fetchCategoriesService } from '../api/categories';
 
 interface CategoryContextType {
   categories: Category[];
@@ -19,13 +15,8 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_DEV}/categories`, {
-        credentials: 'include'
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setCategories(data);
-      }
+      const data = await fetchCategoriesService();
+      setCategories(data);
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
