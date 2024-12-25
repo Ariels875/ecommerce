@@ -28,6 +28,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const navigate = useNavigate();
   const { login, checkAuthStatus } = useAuth();
@@ -54,26 +55,35 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         throw new Error(data.error || 'Error al iniciar sesión');
       }
 
+      await login(data.user);
+      await new Promise(resolve => setTimeout(resolve, 500));
+      await checkAuthStatus();
       setEmail('');
       setPassword('');
       onClose();
-      await login(data.user);
-      await checkAuthStatus();
+
       setShowToast(true);
 
-      setTimeout(() => {
-        if (data.user.rol === 'administrador') {
-          navigate('/admin/panel');
-        } else {
-          navigate('/');
-        }
-      }, 100);
-      
+      if (data.user.rol === 'administrador') {
+        navigate('/admin/panel');
+      } else {
+        navigate('/');
+      }
     } catch (error) {
       console.error('Error durante el login:', error);
       setError(error instanceof Error ? error.message : 'Error al iniciar sesión');
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+    return (
+        <div className="flex justify-center items-center h-screen">
+            <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary"></div>
+        </div>
+    );
+  }
 
   return (
     <>
