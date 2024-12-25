@@ -86,7 +86,7 @@ interface ProductCardProps {
   addToCart: (product: Product, color: string, size: string) => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, addToCart }: { product: Product; addToCart: (product: Product, color: string, size: string) => void }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product }: { product: Product; addToCart: (product: Product, color: string, size: string) => void }) => {
   // const navigate = useNavigate();
   // const handleCardClick = () => {
   //   navigate(`/products/${product.id}`);
