@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '../Ui/Button';
+// import { Button } from '../Ui/Button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../Ui/Select';
 import { Product } from './types';
 
@@ -87,10 +87,10 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, addToCart }: { product: Product; addToCart: (product: Product, color: string, size: string) => void }) => {
-  const navigate = useNavigate();
-  const handleCardClick = () => {
-    navigate(`/products/${product.id}`);
-  }
+  // const navigate = useNavigate();
+  // const handleCardClick = () => {
+  //   navigate(`/products/${product.id}`);
+  // }
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedColor, setSelectedColor] = useState(product.colors[0])
   const [selectedSize, setSelectedSize] = useState(product.sizes[0])
@@ -106,7 +106,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, addToCart }: { produ
   return (
     <div className="bg-white dark:backdrop-blur-md dark:bg-black/30 dark:border dark:border-white/50 rounded-lg shadow-md overflow-hidden">
       <div className="relative">
-        <div onClick={handleCardClick}>
+        <div 
+        // onClick={handleCardClick}
+        >
           <CenteredImage
             src={product.images[currentImageIndex]}
             alt={`${product.name} - Imagen ${currentImageIndex + 1}`}
@@ -136,19 +138,23 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, addToCart }: { produ
       <div className="p-4">
         <h3 
           className="text-lg font-semibold mb-2 dark:text-white truncate" 
-          onClick={handleCardClick}
+          // onClick={handleCardClick}
         >
           {truncateText(product.name, 30)}
         </h3>
         <p 
           className="text-gray-600 dark:text-gray-300 mb-2 line-clamp-2" 
-          onClick={handleCardClick}
+          // onClick={handleCardClick}
         >
           {truncateText(product.description, 60)}
         </p>
         <div className="flex justify-between items-center mb-2">
-          <span className="text-xl font-bold text-primary dark:text-white dark:text-primary-foreground" onClick={handleCardClick}>${product.price.toFixed(2)}</span>
-          <span className="text-sm text-gray-500 dark:text-gray-400" onClick={handleCardClick}>Stock: {product.stock}</span>
+          <span className="text-xl font-bold text-primary dark:text-white dark:text-primary-foreground" 
+          // onClick={handleCardClick}
+          >${product.price.toFixed(2)}</span>
+          <span className="text-sm text-gray-500 dark:text-gray-400" 
+          // onClick={handleCardClick}
+          >Stock: {product.stock}</span>
         </div>
         <div className="mb-2">
           <Select value={selectedColor} onValueChange={setSelectedColor}>
@@ -178,9 +184,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, addToCart }: { produ
             </SelectContent>
           </Select>
         </div>
-        <Button onClick={() => addToCart(product, selectedColor, selectedSize)} className="w-full">
+        {/* <Button onClick={() => addToCart(product, selectedColor, selectedSize)} className="w-full">
           Añadir al carrito
-        </Button>
+        </Button> */}
       </div>
     </div>
   )

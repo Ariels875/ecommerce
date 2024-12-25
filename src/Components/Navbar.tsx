@@ -1,19 +1,19 @@
 // Navbar.tsx
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingCart, Sun, Moon } from 'lucide-react';
-import { Button } from '../Ui/Button';
-import { Badge } from '../Ui/Badge';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '../Ui/Sheet';
-import { useTheme } from './ThemeContext';
-import { useCart } from './CartContext';
-import CartItem from './CartItem';
-import { SearchProducts } from './SearchProducts';
+// import { ShoppingCart, Sun, Moon } from 'lucide-react';
+// import { Button } from '../Ui/Button';
+// import { Badge } from '../Ui/Badge';
+// import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '../Ui/Sheet';
+// import { useTheme } from './ThemeContext';
+// import { useCart } from './CartContext';
+// import CartItem from './CartItem';
+// import { SearchProducts } from './SearchProducts';
 import UserDropdown from './UserDropdown';
 
 const Navbar: React.FC = () => {
-  const { cart, updateQuantity, removeFromCart, totalItems, totalPrice } = useCart();
-  const { theme, toggleTheme } = useTheme();
+  // const { cart, updateQuantity, removeFromCart, totalItems, totalPrice } = useCart();
+  // const { theme, toggleTheme } = useTheme();
 
   return (
     <nav className="bg-white dark:backdrop-blur-md dark:bg-black/30 dark:border dark:border-white/50 rounded-lg p-4 shadow-md sticky top-0 z-10">
@@ -25,11 +25,11 @@ const Navbar: React.FC = () => {
             </Link>
           </div>
           <div className="flex items-center space-x-4">
-            <div className="hidden sm:block">
+            {/* <div className="hidden sm:block">
               <SearchProducts />
-            </div>
+            </div> */}
             <UserDropdown />
-            <Sheet>
+            {/* <Sheet>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="relative transition-colors duration-300 bg-white hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700">
                   <ShoppingCart className="h-5 w-5 dark:text-white" />
@@ -72,8 +72,8 @@ const Navbar: React.FC = () => {
                   </div>
                 )}
               </SheetContent>
-            </Sheet>
-            <Button
+            </Sheet> */}
+            {/* <Button
               variant="ghost"
               size="icon"
               onClick={toggleTheme}
@@ -81,7 +81,7 @@ const Navbar: React.FC = () => {
             >
               {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
               <span className="sr-only">Cambiar tema</span>
-            </Button>
+            </Button> */}
           </div>
         </div>
       </div>
