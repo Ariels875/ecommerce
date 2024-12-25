@@ -21,7 +21,7 @@ const Navbar: React.FC = () => {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link className="text-2xl italic font-bold text-primary dark:text-primary-foreground dark:text-white" to="/">
-              Ariels Store
+              Confecciones Aron
             </Link>
           </div>
           <div className="flex items-center space-x-4">
@@ -98,7 +98,7 @@ const Footer: React.FC = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4">Acerca de nosotros</h3>
             <p className="text-gray-400">
-              Somos una tienda en línea comprometida con ofrecer los mejores productos a nuestros clientes.
+            Somos una tienda online comprometida en ofrecer las mejores prendas de calidad a nuestros clientes, brindándoles una amplia gama de colores y diseños qué les permita encontrar su propia personalidad.
             </p>
           </div>
           <div>
@@ -109,13 +109,13 @@ const Footer: React.FC = () => {
                   Inicio
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link to="/about" className="text-gray-400 hover:text-white transition-colors duration-300">
                   Sobre mi
                 </Link>
-              </li>
+              </li> */}
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors duration-300">
+                <a href="https://api.whatsapp.com/send/?phone=593989603053&text&type=phone_number&app_absent=0" className="text-gray-400 hover:text-white transition-colors duration-300">
                   WhatsApp
                 </a>
               </li>
@@ -126,30 +126,30 @@ const Footer: React.FC = () => {
             <ul className="space-y-2">
               <li>
                 <a
-                  href="mailto:ascastro875@gmail.com"
+                  href="#"
                   className="text-gray-400 hover:text-white transition-colors duration-300"
                 >
-                  Email: ascastro875@gmail.com
+                  Facebook: confecciones Aron
                 </a>
               </li>
               <li>
                 <a
-                  href="tel:+593990518579"
+                  href="tel:+593989603053"
                   className="text-gray-400 hover:text-white transition-colors duration-300"
                 >
-                  Teléfono: +593990518579
+                  Teléfono: +593989603053
                 </a>
               </li>
               <li>
-                <a href="https://www.linkedin.com/in/ariels875/" className="text-gray-400 hover:text-white transition-colors duration-300">
-                  Linkedin: @ariels875
+                <a href="#" className="text-gray-400 hover:text-white transition-colors duration-300">
+                  Instagram: @confecciones_aron
                 </a>
               </li>
-              <li>
+              {/* <li>
                 <a href="https://github.com/Ariels875" className="text-gray-400 hover:text-white transition-colors duration-300">
                   GitHub: @ariels875
                 </a>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>
