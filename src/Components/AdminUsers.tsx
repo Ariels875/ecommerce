@@ -22,7 +22,7 @@ interface User {
 interface UserFormData {
   nombre: string;
   email: string;
-  contraseña: string;
+  contraseña?: string;
   direccion: string;
   telefono: string;
   rol: 'administrador' | 'operador' | 'auditor' | 'usuario';

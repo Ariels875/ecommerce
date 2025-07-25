@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Navbar } from './Navbar';
 import { useTheme } from './ThemeContext';
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
-import { Eye, Download, Search, Calendar, Filter, BarChart } from 'lucide-react';
+import { Eye, Download, Search, Filter, BarChart } from 'lucide-react';
 import { Button } from '../Ui/Button';
 import { Input } from '../Ui/Input';
 import { Label } from '../Ui/Label';
@@ -75,7 +75,7 @@ const AuditorPanel = () => {
         page: page.toString(),
         limit: '20',
         ...Object.fromEntries(
-          Object.entries(filters).filter(([_, value]) => value && value.trim() !== '')
+          Object.entries(filters).filter(([value]) => value && value.trim() !== '')
         )
       });
 
