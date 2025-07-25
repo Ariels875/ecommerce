@@ -12,7 +12,7 @@ const isValidCache = (timestamp: number): boolean => {
 const getCachedProducts = (): Product[] | null => {
   try {
     const cached = localStorage.getItem(CACHE_KEY);
-    if (!cached) return null;
+    if (!cached) return null; // Corregir esto <3
 
     const { timestamp, products }: CachedData = JSON.parse(cached);
     
