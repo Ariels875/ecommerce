@@ -23,8 +23,7 @@
     "noUncheckedSideEffectImports": true,
 
     /* Tipo de json-schema */
-    "typeRoots": ["./node_modules/@types"],
-    "types": ["@types/json-schema"]
+    "typeRoots": ["./node_modules/@types"]
   },
   "include": ["src"]
 }
