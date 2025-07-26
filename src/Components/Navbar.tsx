@@ -170,7 +170,7 @@ const Footer: React.FC = () => {
           </div>
         </div>
         <div className="mt-8 border-t border-gray-700 pt-8 text-center">
-          <p className="text-gray-400">&copy; 2024 Ariels Store. Todos los derechos reservados.</p>
+          <p className="text-gray-400">&copy; 2025 Ariels Store. Todos los derechos reservados.</p>
         </div>
       </div>
     </footer>
