@@ -171,8 +171,8 @@ const OperatorSales = () => {
       <div className="space-y-6">
         {/* Estadísticas */}
         {stats && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 dark:text-white">
+            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow dark:text-white">
               <div className="flex items-center">
                 <ShoppingBag className="h-8 w-8 text-blue-500" />
                 <div className="ml-4">
@@ -181,7 +181,7 @@ const OperatorSales = () => {
                 </div>
               </div>
             </div>
-            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow dark:text-white">
               <div className="flex items-center">
                 <TrendingUp className="h-8 w-8 text-green-500" />
                 <div className="ml-4">
@@ -192,7 +192,7 @@ const OperatorSales = () => {
                 </div>
               </div>
             </div>
-            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow dark:text-white">
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Ventas Completadas</p>
                 <p className="text-2xl font-bold text-green-600">
@@ -200,7 +200,7 @@ const OperatorSales = () => {
                 </p>
               </div>
             </div>
-            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow dark:text-white">
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Ventas Pendientes</p>
                 <p className="text-2xl font-bold text-yellow-600">
@@ -222,7 +222,7 @@ const OperatorSales = () => {
           </div>
           <div className="sm:w-48">
             <select
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm dark:text-white"
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
             >
@@ -237,7 +237,7 @@ const OperatorSales = () => {
         </div>
 
         {/* Tabla de ventas */}
-        <div className="bg-white dark:backdrop-blur-md dark:bg-black/30 dark:border dark:border-white/50 rounded-lg shadow">
+        <div className="bg-white dark:backdrop-blur-md dark:bg-black/30 dark:border dark:border-white/50 rounded-lg shadow dark:text-white">
           <Table>
             <TableHeader>
               <TableRow>
@@ -296,7 +296,7 @@ const OperatorSales = () => {
         </div>
 
         {/* Paginación */}
-        <div className="flex justify-center space-x-2">
+        <div className="flex justify-center space-x-2 dark:text-white">
           <Button
             variant="outline"
             disabled={currentPage === 1}
@@ -304,7 +304,7 @@ const OperatorSales = () => {
           >
             Anterior
           </Button>
-          <span className="flex items-center px-4 py-2 text-sm">
+          <span className="flex items-center px-4 py-2 text-sm dark:text-white">
             Página {currentPage} de {totalPages}
           </span>
           <Button
@@ -318,7 +318,7 @@ const OperatorSales = () => {
       </div>
 
       {/* Modal de detalles de venta */}
-      <Dialog open={isDetailModalOpen} onClose={() => setIsDetailModalOpen(false)} className="relative z-50">
+      <Dialog open={isDetailModalOpen} onClose={() => setIsDetailModalOpen(false)} className="relative z-50 dark:text-white">
         <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
         
         <div className="fixed inset-0 flex items-center justify-center p-4">

@@ -146,10 +146,10 @@ const Checkout: React.FC<CheckoutProps> = ({ isOpen, onClose }) => {
 
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
-      <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+      <div className="fixed inset-0 bg-black/30 dark:text-white" aria-hidden="true" />
       
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <DialogPanel className="mx-auto max-w-md w-full rounded-lg bg-white dark:bg-neutral-900 p-6 shadow-xl max-h-[80vh] overflow-y-auto">
+        <DialogPanel className="mx-auto max-w-md w-full rounded-lg bg-white dark:bg-neutral-900 p-6 shadow-xl max-h-[80vh] overflow-y-auto dark:text-white">
           <DialogTitle className="text-lg font-medium mb-4 dark:text-white flex items-center gap-2">
             <ShoppingBag className="h-5 w-5" />
             Finalizar Compra

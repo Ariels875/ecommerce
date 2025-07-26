@@ -2,7 +2,7 @@ import { Navbar } from './Navbar';
 import AdminProduct from './AdminProduct';
 import AdminCategory from './AdminCategory';
 import AdminUsers from './AdminUsers';
-import AdminSales from './AdminSales';
+import OperatorSales from './OperatorSales';
 import { CategoryProvider } from './CategoryContext';
 import { Package, Grid, Users, ShoppingBag } from 'lucide-react';
 import { useTheme } from './ThemeContext';
@@ -64,7 +64,7 @@ const AdminPanel = () => {
             <AdminUsers />
 
             {/* Gestión de ventas */}
-            <AdminSales />
+            <OperatorSales />
           </Tabs>
         </main>
       </div>

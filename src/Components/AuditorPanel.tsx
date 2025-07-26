@@ -6,6 +6,7 @@ import { Eye, Download, Filter, BarChart, Edit, Trash2, Plus, Star } from 'lucid
 import { Button } from '../Ui/Button';
 import { Input } from '../Ui/Input';
 import { Label } from '../Ui/Label';
+import { Textarea } from '../Ui/Textarea';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../Ui/Table';
 import { Badge } from '../Ui/Badge';
 import { API_URL } from './types';
@@ -31,6 +32,7 @@ interface AuditStats {
   totalLogs: number;
   logsByAction: Array<{ accion: string; count: number }>;
   logsByTable: Array<{ tabla_afectada: string; count: number }>;
+  logsByRole: Array<{ usuario_rol: string; count: number }>;
   mostActiveUsers: Array<{ usuario_email: string; usuario_rol: string; actividad_count: number }>;
   dailyActivity: Array<{ fecha: string; count: number }>;
 }
@@ -47,18 +49,18 @@ const AuditorPanel = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   
-  // Filtros
+  // Filtros actualizados
   const [filters, setFilters] = useState({
-    usuario_email: '',
+    usuario_rol: '',        // Cambiado de usuario_email a usuario_rol
     tabla_afectada: '',
     accion: '',
-    searchTerm: ''
+    searchTerm: ''          // Para búsqueda por descripción
   });
 
   // Form para crear/editar
   const [auditForm, setAuditForm] = useState({
     descripcion: '',
-    escalaLiker: '1',
+    escalaLiker: '3',
     tabla_afectada: 'sistema',
     accion: 'READ' as 'CREATE' | 'READ' | 'UPDATE' | 'DELETE'
   });
@@ -85,15 +87,10 @@ const AuditorPanel = () => {
         limit: '20'
       });
 
-      // Solo agregar filtros que tengan valor
+      // Agregar filtros que tengan valor
       Object.entries(filters).forEach(([key, value]) => {
         if (value && value.trim() !== '') {
-          // Para el email, usar búsqueda exacta
-          if (key === 'usuario_email') {
-            queryParams.append('usuario_email_exact', value.trim());
-          } else {
-            queryParams.append(key, value);
-          }
+          queryParams.append(key, value.trim());
         }
       });
 
@@ -160,7 +157,7 @@ const AuditorPanel = () => {
     setSelectedLog(log);
     setAuditForm({
       descripcion: log.descripcion,
-      escalaLiker: log.escalaLiker || '1',
+      escalaLiker: log.escalaLiker || '3',
       tabla_afectada: log.tabla_afectada,
       accion: log.accion
     });
@@ -168,9 +165,10 @@ const AuditorPanel = () => {
   };
 
   const handleCreateLog = () => {
+    setSelectedLog(null);
     setAuditForm({
       descripcion: '',
-      escalaLiker: '1',
+      escalaLiker: '3',
       tabla_afectada: 'sistema',
       accion: 'READ'
     });
@@ -180,21 +178,31 @@ const AuditorPanel = () => {
   const handleSubmitAudit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const method = selectedLog ? 'PUT' : 'POST';
-      const url = selectedLog 
-        ? `${API_URL}/admin/audit/${selectedLog.id}` 
+      const isEdit = selectedLog !== null;
+      const method = isEdit ? 'PUT' : 'POST';
+      const url = isEdit 
+        ? `${API_URL}/admin/audit/${selectedLog!.id}` 
         : `${API_URL}/admin/audit`;
+
+      // Para edición, solo enviar descripción y escalaLiker
+      const payload = isEdit 
+        ? {
+            descripcion: auditForm.descripcion,
+            escalaLiker: auditForm.escalaLiker
+          }
+        : auditForm;
 
       const response = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify(auditForm)
+        body: JSON.stringify(payload)
       });
 
       if (response.ok) {
         setIsEditModalOpen(false);
         setIsCreateModalOpen(false);
+        setSelectedLog(null);
         fetchAuditLogs(currentPage);
         fetchAuditStats();
       } else {
@@ -208,7 +216,7 @@ const AuditorPanel = () => {
   };
 
   const handleDeleteLog = async (id: number) => {
-    if (!confirm('¿Estás seguro de eliminar este log?')) return;
+    if (!confirm('¿Estás seguro de eliminar este log? Esta acción no se puede deshacer.')) return;
 
     try {
       const response = await fetch(`${API_URL}/admin/audit/${id}`, {
@@ -235,7 +243,7 @@ const AuditorPanel = () => {
 
   const handleClearFilters = () => {
     setFilters({
-      usuario_email: '',
+      usuario_rol: '',
       tabla_afectada: '',
       accion: '',
       searchTerm: ''
@@ -268,14 +276,14 @@ const AuditorPanel = () => {
   };
 
   return (
-    <div className={`min-h-screen w-full bg-gray-50 dark:backdrop-blur-md dark:bg-black/30 dark:border dark:border-white/50 flex flex-col ${theme === 'dark' ? 'dark' : ''}`}>
+    <div className={`min-h-screen w-full bg-gray-50 dark:backdrop-blur-md dark:bg-black/30 dark:border dark:border-white/50 flex dark:text-white flex-col ${theme === 'dark' ? 'dark' : ''}`}>
       <Navbar />
 
-      <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-7xl">
+      <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-7xl dark:text-white">
         {/* Efectos visuales de fondo */}
-        <div className="absolute -top-10 left-10 w-44 h-44 dark:bg-violet-500/30 blur-3xl rounded-full -z-20"></div>
-        <div className="absolute bottom-20 left-50 w-44 h-44 dark:bg-indigo-500/30 blur-3xl rounded-full -z-20"></div>
-        <div className="absolute top-20 right-10 w-44 h-44 dark:bg-purple-500/30 blur-3xl rounded-full -z-20"></div>
+        <div className="absolute -top-10 left-10 w-44 h-44 dark:bg-violet-500/30 blur-3xl rounded-full -z-20 dark:text-white"></div>
+        <div className="absolute bottom-20 left-50 w-44 h-44 dark:bg-indigo-500/30 blur-3xl rounded-full -z-20 dark:text-white"></div>
+        <div className="absolute top-20 right-10 w-44 h-44 dark:bg-purple-500/30 blur-3xl rounded-full -z-20 dark:text-white"></div>
 
         {/* Encabezado */}
         <div className="mb-8">
@@ -297,8 +305,8 @@ const AuditorPanel = () => {
 
         {/* Estadísticas */}
         {stats && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8 dark:text-white">
+            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow dark:text-white">
               <div className="flex items-center">
                 <BarChart className="h-8 w-8 text-blue-500" />
                 <div className="ml-4">
@@ -308,7 +316,7 @@ const AuditorPanel = () => {
               </div>
             </div>
             {stats.logsByAction.slice(0, 4).map((action) => (
-              <div key={action.accion} className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+              <div key={action.accion} className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow dark:text-white">
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{action.accion}</p>
                   <p className="text-2xl font-bold text-gray-900 dark:text-white">{action.count}</p>
@@ -318,33 +326,43 @@ const AuditorPanel = () => {
           </div>
         )}
 
-        {/* Filtros y búsqueda */}
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow mb-6">
+        {/* Filtros y búsqueda actualizados */}
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow mb-6 dark:text-white">
           <h3 className="text-lg font-medium mb-4 dark:text-white">Filtros de Búsqueda</h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4 dark:text-white">
+            {/* Búsqueda por descripción mejorada */}
             <div>
               <Label>Buscar por descripción</Label>
               <Input
-                placeholder="Buscar..."
+                placeholder="Buscar palabras exactas..."
                 value={filters.searchTerm}
                 onChange={(e) => setFilters({ ...filters, searchTerm: e.target.value })}
+                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
               />
+              <p className="text-xs text-gray-500 mt-1">Busca palabras completas en las descripciones</p>
             </div>
 
+            {/* Filtro por rol (reemplaza email) */}
             <div>
-              <Label>Email de Usuario (exacto)</Label>
-              <Input
-                placeholder="usuario@email.com"
-                value={filters.usuario_email}
-                onChange={(e) => setFilters({ ...filters, usuario_email: e.target.value })}
-              />
+              <Label>Rol de Usuario</Label>
+              <select
+                className="w-full rounded-md border border-input bg-background px-3 py-2"
+                value={filters.usuario_rol}
+                onChange={(e) => setFilters({ ...filters, usuario_rol: e.target.value })}
+              >
+                <option value="">Todos los roles</option>
+                <option value="administrador">Administrador</option>
+                <option value="operador">Operador</option>
+                <option value="auditor">Auditor</option>
+                <option value="usuario">Usuario</option>
+              </select>
             </div>
 
             <div>
               <Label>Tabla Afectada</Label>
               <select
-                className="w-full rounded-md border border-input bg-background px-3 py-2"
+                className="w-full rounded-md border border-input bg-background px-3 py-2 dark:text-white"
                 value={filters.tabla_afectada}
                 onChange={(e) => setFilters({ ...filters, tabla_afectada: e.target.value })}
               >
@@ -353,6 +371,7 @@ const AuditorPanel = () => {
                 <option value="productos">Productos</option>
                 <option value="categorias">Categorías</option>
                 <option value="ventas">Ventas</option>
+                <option value="auditoria">Auditoría</option>
                 <option value="sistema">Sistema</option>
               </select>
             </div>
@@ -360,7 +379,7 @@ const AuditorPanel = () => {
             <div>
               <Label>Acción</Label>
               <select
-                className="w-full rounded-md border border-input bg-background px-3 py-2"
+                className="w-full rounded-md border border-input bg-background px-3 py-2 dark:text-white"
                 value={filters.accion}
                 onChange={(e) => setFilters({ ...filters, accion: e.target.value })}
               >
@@ -373,7 +392,7 @@ const AuditorPanel = () => {
             </div>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 dark:text-white">
             <Button onClick={handleSearch} className="flex items-center gap-2">
               <Filter className="h-4 w-4" />
               Aplicar Filtros
@@ -389,13 +408,13 @@ const AuditorPanel = () => {
         </div>
 
         {/* Tabla de logs */}
-        <div className="bg-white dark:backdrop-blur-md dark:bg-black/30 dark:border dark:border-white/50 rounded-lg shadow">
+        <div className="bg-white dark:backdrop-blur-md dark:bg-black/30 dark:border dark:border-white/50 rounded-lg shadow dark:text-white">
           {isLoading ? (
             <div className="flex justify-center items-center h-64">
               <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary"></div>
             </div>
           ) : (
-            <Table>
+            <Table className='dark:text-white'>
               <TableHeader>
                 <TableRow>
                   <TableHead>ID</TableHead>
@@ -445,7 +464,7 @@ const AuditorPanel = () => {
                         <div className="text-gray-500">{new Date(log.created_at).toLocaleTimeString()}</div>
                       </div>
                     </TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="text-right dark:text-white">
                       <div className="flex gap-2 justify-end">
                         <Button
                           variant="ghost"
@@ -480,7 +499,7 @@ const AuditorPanel = () => {
 
         {/* Paginación */}
         {totalPages > 1 && (
-          <div className="flex justify-center space-x-2 mt-6">
+          <div className="flex justify-center space-x-2 mt-6 dark:text-white">
             <Button
               variant="outline"
               disabled={currentPage === 1}
@@ -503,7 +522,7 @@ const AuditorPanel = () => {
       </main>
 
       {/* Modal de detalles del log */}
-      <Dialog open={isDetailModalOpen} onClose={() => setIsDetailModalOpen(false)} className="relative z-50">
+      <Dialog open={isDetailModalOpen} onClose={() => setIsDetailModalOpen(false)} className="relative z-50 dark:text-white">
         <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
         
         <div className="fixed inset-0 flex items-center justify-center p-4">
@@ -542,7 +561,14 @@ const AuditorPanel = () => {
                         <div><strong>ID Registro:</strong> {selectedLog.registro_id}</div>
                       )}
                       <div><strong>Fecha:</strong> {new Date(selectedLog.created_at).toLocaleString()}</div>
-                      <div><strong>Escala Likert:</strong> {selectedLog.escalaLiker || 'Sin calificar'}</div>
+                      <div className="flex items-center"><strong>Escala Likert:</strong> 
+                        <div className="flex items-center gap-1 ml-2">
+                          {Array.from({length: parseInt(selectedLog.escalaLiker || '0')}).map((_, i) => (
+                            <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                          ))}
+                          <span className="text-sm ml-1">{selectedLog.escalaLiker || 'Sin calificar'}</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -550,26 +576,26 @@ const AuditorPanel = () => {
                 {/* Descripción */}
                 <div>
                   <h4 className="font-medium mb-2 dark:text-white">Descripción</h4>
-                  <p className="text-sm p-3 bg-gray-50 dark:bg-gray-800 rounded">{selectedLog.descripcion}</p>
+                  <p className="text-sm p-3 bg-gray-50 dark:bg-gray-800 rounded dark:text-white">{selectedLog.descripcion}</p>
                 </div>
 
                 {/* Información técnica */}
                 {(selectedLog.ip_address || selectedLog.user_agent) && (
                   <div>
                     <h4 className="font-medium mb-2 dark:text-white">Información Técnica</h4>
-                    <div className="space-y-2 text-sm">
+                    <div className="space-y-2 text-sm dark:text-white">
                       {selectedLog.ip_address && (
                         <div><strong>IP:</strong> {selectedLog.ip_address}</div>
                       )}
                       {selectedLog.user_agent && (
-                        <div><strong>User Agent:</strong> {selectedLog.user_agent}</div>
+                        <div><strong>User Agent:</strong> <span className="break-all">{selectedLog.user_agent}</span></div>
                       )}
                     </div>
                   </div>
                 )}
 
                 {/* Datos anteriores y nuevos */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 dark:text-white">
                   {selectedLog.datos_anteriores && (
                     <div>
                       <h4 className="font-medium mb-2 dark:text-white">Datos Anteriores</h4>
@@ -591,7 +617,7 @@ const AuditorPanel = () => {
               </div>
             )}
             
-            <div className="flex justify-end mt-6">
+            <div className="flex justify-end mt-6 dark:text-white">
               <Button onClick={() => setIsDetailModalOpen(false)}>
                 Cerrar
               </Button>
@@ -604,58 +630,66 @@ const AuditorPanel = () => {
       <Dialog open={isEditModalOpen || isCreateModalOpen} onClose={() => {
         setIsEditModalOpen(false);
         setIsCreateModalOpen(false);
-      }} className="relative z-50">
+        setSelectedLog(null);
+      }} className="relative z-50 dark:text-white">
         <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
         
-        <div className="fixed inset-0 flex items-center justify-center p-4">
-          <DialogPanel className="mx-auto max-w-md w-full rounded-lg bg-white dark:bg-neutral-900 p-6 shadow-xl">
+        <div className="fixed inset-0 flex items-center justify-center p-4 dark:text-white">
+          <DialogPanel className="mx-auto max-w-md w-full rounded-lg bg-white dark:bg-neutral-900 p-6 shadow-xl dark:text-white">
             <DialogTitle className="text-lg font-medium mb-4 dark:text-white">
               {selectedLog ? 'Editar Log de Auditoría' : 'Crear Log de Auditoría'}
             </DialogTitle>
             
-            <form onSubmit={handleSubmitAudit} className="space-y-4">
+            <form onSubmit={handleSubmitAudit} className="space-y-4 dark:text-white">
               <div>
                 <Label htmlFor="descripcion">Descripción</Label>
-                <Input
+                <Textarea
                   id="descripcion"
                   value={auditForm.descripcion}
                   onChange={(e) => setAuditForm({ ...auditForm, descripcion: e.target.value })}
+                  placeholder="Describe la acción realizada..."
+                  rows={3}
                   required
                 />
               </div>
 
-              <div>
-                <Label htmlFor="tabla_afectada">Tabla Afectada</Label>
-                <select
-                  id="tabla_afectada"
-                  className="w-full rounded-md border border-input bg-background px-3 py-2"
-                  value={auditForm.tabla_afectada}
-                  onChange={(e) => setAuditForm({ ...auditForm, tabla_afectada: e.target.value })}
-                  required
-                >
-                  <option value="sistema">Sistema</option>
-                  <option value="usuarios">Usuarios</option>
-                  <option value="productos">Productos</option>
-                  <option value="categorias">Categorías</option>
-                  <option value="ventas">Ventas</option>
-                </select>
-              </div>
+              {!selectedLog && (
+                <>
+                  <div>
+                    <Label htmlFor="tabla_afectada">Tabla Afectada</Label>
+                    <select
+                      id="tabla_afectada"
+                      className="w-full rounded-md border border-input bg-background px-3 py-2"
+                      value={auditForm.tabla_afectada}
+                      onChange={(e) => setAuditForm({ ...auditForm, tabla_afectada: e.target.value })}
+                      required
+                    >
+                      <option value="sistema">Sistema</option>
+                      <option value="usuarios">Usuarios</option>
+                      <option value="productos">Productos</option>
+                      <option value="categorias">Categorías</option>
+                      <option value="ventas">Ventas</option>
+                      <option value="auditoria">Auditoría</option>
+                    </select>
+                  </div>
 
-              <div>
-                <Label htmlFor="accion">Acción</Label>
-                <select
-                  id="accion"
-                  className="w-full rounded-md border border-input bg-background px-3 py-2"
-                  value={auditForm.accion}
-                  onChange={(e) => setAuditForm({ ...auditForm, accion: e.target.value as 'CREATE' | 'READ' | 'UPDATE' | 'DELETE' })}
-                  required
-                >
-                  <option value="CREATE">CREATE</option>
-                  <option value="READ">READ</option>
-                  <option value="UPDATE">UPDATE</option>
-                  <option value="DELETE">DELETE</option>
-                </select>
-              </div>
+                  <div>
+                    <Label htmlFor="accion">Acción</Label>
+                    <select
+                      id="accion"
+                      className="w-full rounded-md border border-input bg-background px-3 py-2"
+                      value={auditForm.accion}
+                      onChange={(e) => setAuditForm({ ...auditForm, accion: e.target.value as 'CREATE' | 'READ' | 'UPDATE' | 'DELETE' })}
+                      required
+                    >
+                      <option value="CREATE">CREATE</option>
+                      <option value="READ">READ</option>
+                      <option value="UPDATE">UPDATE</option>
+                      <option value="DELETE">DELETE</option>
+                    </select>
+                  </div>
+                </>
+              )}
 
               <div>
                 <Label htmlFor="escalaLiker">Escala Likert (1-5)</Label>
@@ -678,6 +712,7 @@ const AuditorPanel = () => {
                 <Button type="button" variant="outline" onClick={() => {
                   setIsEditModalOpen(false);
                   setIsCreateModalOpen(false);
+                  setSelectedLog(null);
                 }}>
                   Cancelar
                 </Button>

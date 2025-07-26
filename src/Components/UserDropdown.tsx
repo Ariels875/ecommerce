@@ -1,13 +1,15 @@
 import React, { Fragment } from 'react';
 import { Menu, Transition, MenuItem, MenuItems, MenuButton } from '@headlessui/react';
 import { Button } from '../Ui/Button';
-import { User, Shield, Settings, Eye, BarChart, Activity } from 'lucide-react';
+import { User, Shield, Settings, Eye, BarChart, UserPlus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import LoginModal from './LoginModal';
+import RegisterModal from './RegisterModal';
 
 const UserDropdown = () => {
   const [isLoginModalOpen, setIsLoginModalOpen] = React.useState(false);
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = React.useState(false);
   const { user, logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -31,15 +33,23 @@ const UserDropdown = () => {
       case 'auditor':
         navigate('/auditor/panel');
         break;
-      case 'diagnostic':
-        navigate('/system/diagnostic');
-        break;
       default:
         navigate('/');
     }
   };
 
   const handleLoginClick = () => {
+    setIsLoginModalOpen(true);
+  };
+
+  const handleRegisterClick = () => {
+    console.log('Abriendo modal de registro'); // Debug
+    setIsRegisterModalOpen(true);
+  };
+
+  const handleRegistrationSuccess = () => {
+    // Opcionalmente abrir el modal de login después del registro
+    setIsRegisterModalOpen(false);
     setIsLoginModalOpen(true);
   };
 
@@ -91,14 +101,6 @@ const UserDropdown = () => {
         // Usuario normal no tiene paneles administrativos
         break;
     }
-
-    // Agregar diagnóstico para todos los usuarios autenticados
-    options.push({
-      label: 'Diagnóstico del Sistema',
-      icon: Activity,
-      action: () => handlePanelNavigation('diagnostic'),
-      description: 'Estado del sistema y servicios'
-    });
 
     return options;
   };
@@ -202,19 +204,37 @@ const UserDropdown = () => {
                 </MenuItem>
               </div>
             ) : (
-              <MenuItem>
-                {({ active }) => (
-                  <button
-                    onClick={handleLoginClick}
-                    className={`${
-                      active ? 'bg-gray-100 dark:bg-gray-700' : ''
-                    } group flex w-full items-center rounded-md px-3 py-2 text-sm text-gray-900 dark:text-white`}
-                  >
-                    <User className="h-4 w-4 mr-3 text-gray-400" />
-                    Iniciar Sesión
-                  </button>
-                )}
-              </MenuItem>
+              <div className="p-1">
+                {/* Iniciar Sesión */}
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={handleLoginClick}
+                      className={`${
+                        active ? 'bg-gray-100 dark:bg-gray-700' : ''
+                      } group flex w-full items-center rounded-md px-3 py-2 text-sm text-gray-900 dark:text-white`}
+                    >
+                      <User className="h-4 w-4 mr-3 text-gray-400" />
+                      Iniciar Sesión
+                    </button>
+                  )}
+                </MenuItem>
+
+                {/* Crear Cuenta */}
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={handleRegisterClick}
+                      className={`${
+                        active ? 'bg-gray-100 dark:bg-gray-700' : ''
+                      } group flex w-full items-center rounded-md px-3 py-2 text-sm text-gray-900 dark:text-white`}
+                    >
+                      <UserPlus className="h-4 w-4 mr-3 text-gray-400" />
+                      Crear Cuenta
+                    </button>
+                  )}
+                </MenuItem>
+              </div>
             )}
           </MenuItems>
         </Transition>
@@ -223,6 +243,15 @@ const UserDropdown = () => {
       <LoginModal 
         isOpen={isLoginModalOpen} 
         onClose={() => setIsLoginModalOpen(false)} 
+      />
+
+      <RegisterModal 
+        isOpen={isRegisterModalOpen} 
+        onClose={() => {
+          console.log('Cerrando modal de registro'); // Debug
+          setIsRegisterModalOpen(false);
+        }}
+        onSuccess={handleRegistrationSuccess}
       />
     </>
   );

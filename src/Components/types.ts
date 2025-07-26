@@ -1,5 +1,5 @@
 // types.ts
-export const API_URL = import.meta.env.VITE_API_DEV;
+export const API_URL = import.meta.env.VITE_API_URL;
 
 export interface Product {
   id: number;
