@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 import defaultTheme from 'tailwindcss/defaultTheme';
+import animate from 'tailwindcss-animate';
 
 export default {
   content: [
@@ -68,6 +69,6 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
-  darkMode: 'class', // Esto permite el cambio de tema usando la clase 'dark'
+  plugins: [animate],
+  darkMode: 'class',
 }
